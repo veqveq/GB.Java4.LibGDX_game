@@ -20,7 +20,7 @@ public class BaseScreen implements Screen, InputProcessor {
     private Rect glBounds;
 
     private Matrix4 worldToGl;
-    private Matrix3 screenToWorld;
+    private static Matrix3 screenToWorld;
 
     private Vector2 touch;
 
@@ -151,5 +151,9 @@ public class BaseScreen implements Screen, InputProcessor {
     public boolean scrolled(int amount) {
         System.out.println("scrolled amount = " + amount);
         return false;
+    }
+
+    public static Matrix3 getScreenToWorld() {
+        return screenToWorld;
     }
 }
