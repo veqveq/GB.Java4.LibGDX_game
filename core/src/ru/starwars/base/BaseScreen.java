@@ -1,7 +1,6 @@
 package ru.starwars.base;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -13,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.starwars.math.MatrixUtils;
 import ru.starwars.math.Rect;
 
-public class BaseScreen extends InputMultiplexer implements Screen {
+public class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
     private Rect screenBounds;
@@ -21,7 +20,7 @@ public class BaseScreen extends InputMultiplexer implements Screen {
     private Rect glBounds;
 
     private Matrix4 worldToGl;
-    private static Matrix3 screenToWorld;
+    private Matrix3 screenToWorld;
 
     private Vector2 touch;
 
@@ -35,12 +34,21 @@ public class BaseScreen extends InputMultiplexer implements Screen {
         worldToGl = new Matrix4();
         screenToWorld = new Matrix3();
         touch = new Vector2();
+        Gdx.input.setInputProcessor(this);
     }
 
     @Override
     public void render(float delta) {
         Gdx.gl.glClearColor(0.2f, 0.6f, 0.4f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+    }
+
+    public void update (float delta){
+
+    }
+
+    public void draw(){
+
     }
 
     @Override
@@ -85,7 +93,70 @@ public class BaseScreen extends InputMultiplexer implements Screen {
         batch.dispose();
     }
 
-    public static Matrix3 getScreenToWorld() {
-        return screenToWorld;
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        touch.set(screenX,Gdx.graphics.getHeight()-screenY).mul(screenToWorld);
+        touchDown(touch,pointer,button);
+        return false;
+    }
+
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        touch.set(screenX,Gdx.graphics.getHeight()-screenY).mul(screenToWorld);
+        touchUp(touch,pointer,button);
+        return false;
+    }
+
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        return false;
+    }
+
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        touch.set(screenX,Gdx.graphics.getHeight()-screenY).mul(screenToWorld);
+        touchDragged(touch,pointer);
+        return false;
+    }
+
+    public boolean touchDragged(Vector2 touch, int pointer) {
+        return false;
+    }
+
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        touch.set(screenX,Gdx.graphics.getHeight()-screenY).mul(screenToWorld);
+        mouseMoved(touch);
+        return false;
+    }
+
+    public boolean mouseMoved(Vector2 touch) {
+        return false;
+    }
+
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }

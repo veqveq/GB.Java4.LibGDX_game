@@ -1,18 +1,20 @@
 package ru.starwars.sprite;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ru.starwars.base.MenuButton;
+import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
 import ru.starwars.screen.GameScreen;
 
-public class PlayButton extends MenuButton {
+public class PlayButton extends BaseButton {
 
     private Game game;
 
-    public PlayButton(TextureRegion region, Game game) {
-        super(region);
+    public PlayButton(TextureAtlas atlas, Game game) {
+        super(atlas.findRegion("btPlay"));
         this.game = game;
     }
 
@@ -23,8 +25,7 @@ public class PlayButton extends MenuButton {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+    protected void action() {
         game.setScreen(new GameScreen());
-        return false;
     }
 }

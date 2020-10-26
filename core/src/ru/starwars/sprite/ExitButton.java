@@ -1,17 +1,16 @@
 package ru.starwars.sprite;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-import ru.starwars.base.BaseScreen;
-import ru.starwars.base.MenuButton;
+import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
 
-public class ExitButton extends MenuButton {
+public class ExitButton extends BaseButton {
 
-    public ExitButton(TextureRegion region) {
-        super(region);
+    public ExitButton(TextureAtlas atlas) {
+        super(atlas.findRegion("btExit"));
     }
 
     @Override
@@ -21,18 +20,25 @@ public class ExitButton extends MenuButton {
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (isMe(new Vector2(screenX, Gdx.graphics.getHeight() - screenY).mul(BaseScreen.getScreenToWorld()))) {
-            touchEnd = true;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    animation(50);
-                    System.exit(0);
-                }
-            }).start();
-            return true;
+    protected void action() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                animation();
+                Gdx.app.exit();
+            }
+        }).start();
+    }
+
+    private void animation(){
+        playAnimation = false;
+        while (scale <= 50f){
+            try {
+                Thread.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            scale+=0.2f;
         }
-        return false;
     }
 }

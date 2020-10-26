@@ -1,0 +1,26 @@
+
+menu.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+star
+  rotate: false
+  xy: 1, 67
+  size: 1100, 1103
+  orig: 1100, 1103
+  offset: 0, 0
+  index: -1
+btExit
+  rotate: false
+  xy: 1, 1
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+btPlay
+  rotate: false
+  xy: 1103, 1106
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1

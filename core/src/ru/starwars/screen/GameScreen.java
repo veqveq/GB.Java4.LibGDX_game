@@ -1,8 +1,8 @@
 package ru.starwars.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseScreen;
 import ru.starwars.math.Rect;
@@ -22,8 +22,6 @@ public class GameScreen extends BaseScreen {
         lg = new Texture("textures\\logo.jpg");
         background = new Background(new TextureRegion(bg));
         logo = new Logo(new TextureRegion(lg));
-        addProcessor(logo);
-        Gdx.input.setInputProcessor(this);
     }
 
     @Override
@@ -42,9 +40,17 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        logo.touchDown(touch,pointer,button);
+        return false;
+    }
+
+    @Override
     public void dispose() {
         bg.dispose();
         lg.dispose();
         super.dispose();
     }
+
+
 }
