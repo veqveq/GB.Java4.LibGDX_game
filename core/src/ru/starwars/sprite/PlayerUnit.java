@@ -102,6 +102,8 @@ public class PlayerUnit extends Sprite {
                 resistance.set(-0.0001f, 0);
                 frame = 3;
                 break;
+            default:
+                return;
         }
         tmp.setZero();
         v.setZero();

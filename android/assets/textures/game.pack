@@ -5,21 +5,42 @@ filter: Nearest,Nearest
 repeat: none
 X-Wing-turn
   rotate: false
-  xy: 1, 1603
+  xy: 1, 1861
   size: 2832, 1600
   orig: 2832, 1600
   offset: 0, 0
   index: -1
 X-Wing
   rotate: false
-  xy: 1, 1
+  xy: 1, 259
   size: 2832, 1600
   orig: 2832, 1600
   offset: 0, 0
   index: -1
+cruiser
+  rotate: false
+  xy: 2835, 2949
+  size: 512, 512
+  orig: 512, 512
+  offset: 0, 0
+  index: -1
+tie-striker
+  rotate: false
+  xy: 1, 1
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+fire
+  rotate: false
+  xy: 2835, 2819
+  size: 256, 128
+  orig: 256, 128
+  offset: 0, 0
+  index: -1
 star
   rotate: false
-  xy: 2835, 3171
+  xy: 3349, 3429
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
