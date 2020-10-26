@@ -20,11 +20,6 @@ public class Star extends Sprite {
     }
 
     @Override
-    public void draw(SpriteBatch batch) {
-        super.draw(batch);
-    }
-
-    @Override
     public void update(float delta) {
         pos.mulAdd(v,delta);
         if (getLeft()>worldBounds.getRight()) setRight(worldBounds.getLeft());
