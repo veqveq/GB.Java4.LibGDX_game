@@ -11,15 +11,21 @@ import ru.starwars.math.Rect;
 import ru.starwars.sprite.Background;
 import ru.starwars.sprite.ExitButton;
 import ru.starwars.sprite.PlayButton;
+import ru.starwars.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
 
+    private final int STARS_COUNT = 256;
+
+    private Game game;
     private Texture bg;
+    private TextureAtlas atlas;
+
     private Background background;
     private ExitButton exit;
     private PlayButton play;
-    private Game game;
-    private TextureAtlas atlas;
+    private Star[] stars;
+
 
     public MenuScreen(Game game) {
         this.game = game;
@@ -34,6 +40,11 @@ public class MenuScreen extends BaseScreen {
         background = new Background(new TextureRegion(bg));
         play = new PlayButton(atlas, game);
         exit = new ExitButton(atlas);
+
+        stars = new Star[STARS_COUNT];
+        for (int i = 0; i < stars.length; i++) {
+            stars[i] = new Star(atlas);
+        }
     }
 
     @Override
@@ -50,6 +61,9 @@ public class MenuScreen extends BaseScreen {
         background.resize(worldBounds);
         exit.resize(worldBounds);
         play.resize(worldBounds);
+        for (Star star : stars) {
+            star.resize(worldBounds);
+        }
     }
 
     @Override
@@ -81,11 +95,16 @@ public class MenuScreen extends BaseScreen {
     }
 
     public void update(float delta) {
-
+        for (Star star : stars) {
+            star.update(delta);
+        }
     }
 
     public void draw() {
         background.draw(batch);
+        for (Star star : stars) {
+            star.draw(batch);
+        }
         play.draw(batch);
         exit.draw(batch);
     }

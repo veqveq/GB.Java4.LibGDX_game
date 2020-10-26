@@ -1,9 +1,7 @@
 package ru.starwars.sprite;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
