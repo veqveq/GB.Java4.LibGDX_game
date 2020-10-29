@@ -2,143 +2,172 @@ package ru.starwars.sprite;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.Sprite;
 import ru.starwars.math.Rect;
+import ru.starwars.math.TextureSpliter;
 
 public class PlayerUnit extends Sprite {
 
-    private final float MERGED = 0.15f;
-    private final float SPEED = 0.01f;
-
+    private final float MERGED = 0.02f;
+    private final float ACCELERATION = 0.0005f;
+    private final float RESISTANCE = 0.0002f;
 
     private final Vector2 v;
-    private Vector2 touch;
-    private final Vector2 tmp;
-    private final Vector2 resistance;
-    private final Vector2 acceleration;
+    private final Vector2 a;
+    private final Vector2 r;
+    private final Vector2 a0;
+    private final Vector2 r0;
+
+    private boolean left;
+    private boolean right;
+
+    private int leftPoint;
+    private int rightPoint;
 
     private Rect worldBounds;
 
     public PlayerUnit(TextureAtlas atlas) {
-        super(new TextureRegion[]{
-                new TextureRegion(atlas.findRegion("X-Wing"), 0, 0, atlas.findRegion("X-Wing").getRegionWidth() / 2, atlas.findRegion("X-Wing").getRegionHeight()),
-                new TextureRegion(atlas.findRegion("X-Wing"), atlas.findRegion("X-Wing").getRegionWidth() / 2, 0, atlas.findRegion("X-Wing").getRegionWidth() / 2, atlas.findRegion("X-Wing").getRegionHeight()),
-                new TextureRegion(atlas.findRegion("X-Wing-turn"), 0, 0, atlas.findRegion("X-Wing-turn").getRegionWidth() / 2, atlas.findRegion("X-Wing-turn").getRegionHeight()),
-                new TextureRegion(atlas.findRegion("X-Wing-turn"), atlas.findRegion("X-Wing-turn").getRegionWidth() / 2, 0, atlas.findRegion("X-Wing-turn").getRegionWidth() / 2, atlas.findRegion("X-Wing-turn").getRegionHeight())
-        });
+        super(TextureSpliter.split(atlas.findRegion("X-Wing"), 4, 1, 4));
 
         v = new Vector2();
-        resistance = new Vector2();
-        acceleration = new Vector2();
-
-        touch = new Vector2();
-        tmp = new Vector2();
-    }
-
-    private void acceleratedMove() {
-        v.add(acceleration).add(resistance);
-        if (tmp.x * v.x < 0) {
-            resistance.setZero();
-            v.setZero();
-        }
-        if (checkPosition()) {
-            pos.add(v);
-        } else {
-            resistance.setZero();
-        }
-    }
-
-    public void forwardMove() {
-        tmp.set(touch);
-        if (tmp.sub(pos).len() <= SPEED) {
-            pos.set(touch);
-            frame = 0;
-        } else {
-            if (checkPosition()) pos.add(v);
-        }
-    }
-
-    @Override
-    public void update(float delta) {
-        if (acceleration.len() != 0 || resistance.len() != 0) {
-            acceleratedMove();
-        } else {
-            forwardMove();
-        }
+        a = new Vector2();
+        r = new Vector2();
+        a0 = new Vector2(ACCELERATION, 0);
+        r0 = new Vector2(RESISTANCE, 0);
     }
 
     @Override
     public void resize(Rect worldBounds) {
         this.worldBounds = worldBounds;
-        pos.set(0f, worldBounds.getBottom() + MERGED);
         setHeightProportion(0.2f);
+        setBottom(worldBounds.getBottom() + MERGED);
     }
 
-    @Override
-    public boolean touchDown(Vector2 touch, int pointer, int button) {
-        resistance.setZero();
-        tmp.setZero();
-        this.touch = new Vector2(touch.x, pos.y);
-        if (touch.x < pos.x) {
-            turnLeft();
-        } else {
-            turnRight();
-        }
-        return false;
+    private void moveLeft() {
+        a.set(a0.cpy().rotate(180));
+        r.set(r0);
+        frame = 2;
+    }
+
+    private void moveRight() {
+        a.set(a0);
+        r.set(r0.cpy().rotate(180));
+        frame = 3;
+    }
+
+    private void stop() {
+        v.setZero();
+        a.setZero();
+        r.setZero();
+        frame = 0;
     }
 
     public void keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
-                acceleration.set(-0.0005f, 0);
-                resistance.set(0.0001f, 0);
-                frame = 2;
+                left = true;
+                if (!right) {
+                    moveLeft();
+                }
                 break;
             case Input.Keys.RIGHT:
-                acceleration.set(0.0005f, 0);
-                resistance.set(-0.0001f, 0);
-                frame = 3;
+                right = true;
+                if (!left) {
+                    moveRight();
+                }
                 break;
-            default:
-                return;
         }
-        tmp.setZero();
-        v.setZero();
     }
 
-    public void keyUp() {
-        acceleration.setZero();
+    public void keyUp(int keycode) {
+        switch (keycode) {
+            case Input.Keys.LEFT:
+                left = false;
+                if (right) {
+                    moveRight();
+                } else {
+                    a.setZero();
+                    frame = 0;
+                }
+                break;
+            case Input.Keys.RIGHT:
+                right = false;
+                if (left) {
+                    moveLeft();
+                } else {
+                    a.setZero();
+                    frame = 0;
+                }
+                break;
+        }
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        if (touch.x < pos.x) {
+            leftPoint = pointer;
+            left = true;
+            moveLeft();
+        } else {
+            rightPoint = pointer;
+            right = true;
+            moveRight();
+        }
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        if (pointer == leftPoint){
+            left = false;
+            if (right) {
+                moveRight();
+            } else {
+                a.setZero();
+                frame = 0;
+            }
+        }
+        if (pointer == rightPoint){
+            right = false;
+            if (left) {
+                moveLeft();
+            } else {
+                a.setZero();
+                frame = 0;
+            }
+        }
+        a.setZero();
         frame = 0;
-        acceleration.setZero();
-        tmp.set(v);
+        return false;
     }
 
-    private void turnLeft() {
-        if (touch.x >= worldBounds.getLeft() + getHalfWidth()) frame = 2;
-        v.set(-SPEED, 0);
+    @Override
+    public void update(float delta) {
+        v.add(a).add(r);
+        pos.add(v);
+        checkPos();
     }
 
-    private void turnRight() {
-        if (touch.x <= worldBounds.getRight() - getHalfWidth()) frame = 3;
-        v.set(SPEED, 0);
-    }
-
-    private boolean checkPosition() {
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            v.setZero();
-            frame = 0;
-            return false;
-        }
+    private void checkPos() {
         if (getLeft() < worldBounds.getLeft()) {
             setLeft(worldBounds.getLeft());
-            v.setZero();
-            frame = 0;
-            return false;
+            stop();
+            if (right) {
+                moveRight();
+            }
         }
-        return true;
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+            if (left) {
+                moveLeft();
+            }
+            ;
+        }
+        if (v.cpy().add(r).len() < r.len() && !right && !left) {
+            stop();
+        }
     }
 }

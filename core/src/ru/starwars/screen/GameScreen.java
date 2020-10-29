@@ -55,6 +55,12 @@ public class GameScreen extends BaseScreen {
     }
 
     @Override
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        player.touchUp(touch,pointer,button);
+        return false;
+    }
+
+    @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
         player.touchDown(touch,pointer,button);
         return false;
@@ -94,7 +100,7 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public boolean keyUp(int keycode) {
-        player.keyUp();
+        player.keyUp(keycode);
         return false;
     }
 }
