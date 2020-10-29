@@ -14,6 +14,10 @@ public abstract class BaseButton extends Sprite {
         super(texture);
     }
 
+    public BaseButton(TextureRegion[] texture) {
+        super(texture);
+    }
+
     public boolean mouseMoved(Vector2 cursorPosition) {
         if (playAnimation) {
             if (isMe(cursorPosition)) {

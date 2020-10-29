@@ -1,5 +1,6 @@
 package ru.starwars.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
@@ -19,12 +20,18 @@ public class GameScreen extends BaseScreen {
     private final int STARS_COUNT = 64;
 
     private Texture bg;
+
     private Background background;
     private PlayerUnit player;
     private Star[] stars;
     private TextureAtlas atlas;
     private BulletPool bulletPool;
     private Music music;
+    private boolean sounds;
+
+    public GameScreen(Boolean sounds){
+        this.sounds = sounds;
+    }
 
     @Override
     public void show() {
@@ -33,16 +40,19 @@ public class GameScreen extends BaseScreen {
         bg = new Texture("textures\\background.jpg");
         background = new Background(new TextureRegion(bg));
         bulletPool = new BulletPool();
-        player = new PlayerUnit(atlas,bulletPool);
+        player = new PlayerUnit(atlas,bulletPool,sounds);
         stars = new Star[STARS_COUNT];
 
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
-        music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MainTheme.mp3"));
-        music.setLooping(true);
-        music.setVolume(0.5f);
-        music.play();
+
+        if (sounds) {
+            music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MainTheme.mp3"));
+            music.setLooping(true);
+            music.setVolume(0.5f);
+            music.play();
+        }
     }
 
     @Override

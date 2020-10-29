@@ -29,6 +29,7 @@ public class PlayerUnit extends Sprite {
     private Vector2 bulletPos;
     private Vector2 bulletV;
     private Sound soundShot;
+    private boolean sound;
 
     private boolean left;
     private boolean right;
@@ -38,12 +39,13 @@ public class PlayerUnit extends Sprite {
 
     private Rect worldBounds;
 
-    public PlayerUnit(TextureAtlas atlas, BulletPool bulletPool) {
+    public PlayerUnit(TextureAtlas atlas, BulletPool bulletPool, boolean sound) {
         super(TextureSpliter.split(atlas.findRegion("X-Wing"), 4, 1, 4));
         this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
 
         soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
         this.bulletPool = bulletPool;
+        this.sound = sound;
 
         v = new Vector2();
         a = new Vector2();
@@ -54,13 +56,13 @@ public class PlayerUnit extends Sprite {
         r0 = new Vector2(RESISTANCE, 0);
     }
 
-    public void autoShooting(){
+    public void autoShooting() {
         if (bulletPool.getActiveObjects().size() != 0) {
             Bullet lastBullet = bulletPool.getActiveObjects().get(bulletPool.getActiveObjects().size() - 1);
             if (lastBullet.getTop() >= 0) {
                 shot();
             }
-        }else{
+        } else {
             shot();
         }
     }
@@ -92,7 +94,7 @@ public class PlayerUnit extends Sprite {
     }
 
     private void shot() {
-        soundShot.play();
+        if (sound) soundShot.play();
         Bullet bulletLeft = bulletPool.obtain();
         Bullet bulletRight = bulletPool.obtain();
         bulletPos.set(getLeft() + MERGED, getTop() - MERGED);

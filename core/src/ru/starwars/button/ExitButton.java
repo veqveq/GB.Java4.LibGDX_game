@@ -1,4 +1,4 @@
-package ru.starwars.sprite;
+package ru.starwars.button;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;

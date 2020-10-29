@@ -1,18 +1,25 @@
 
 menu.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
-btExit
+btMusic
   rotate: false
   xy: 1, 35
+  size: 128, 64
+  orig: 128, 64
+  offset: 0, 0
+  index: -1
+btExit
+  rotate: false
+  xy: 131, 35
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 btPlay
   rotate: false
-  xy: 67, 35
+  xy: 197, 35
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

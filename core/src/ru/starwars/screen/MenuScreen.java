@@ -9,10 +9,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseScreen;
+import ru.starwars.button.MusicButton;
 import ru.starwars.math.Rect;
 import ru.starwars.sprite.Background;
-import ru.starwars.sprite.ExitButton;
-import ru.starwars.sprite.PlayButton;
+import ru.starwars.button.ExitButton;
+import ru.starwars.button.PlayButton;
 import ru.starwars.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
@@ -24,8 +25,9 @@ public class MenuScreen extends BaseScreen {
     private TextureAtlas atlas;
 
     private Background background;
-    private ExitButton exit;
-    private PlayButton play;
+    private ExitButton exitBt;
+    private PlayButton playBt;
+    private MusicButton musicBt;
     private Star[] stars;
     private Music music;
 
@@ -41,8 +43,9 @@ public class MenuScreen extends BaseScreen {
         bg = new Texture("textures\\background.jpg");
 
         background = new Background(new TextureRegion(bg));
-        play = new PlayButton(atlas, game);
-        exit = new ExitButton(atlas);
+        playBt = new PlayButton(atlas, game);
+        musicBt = new MusicButton(atlas);
+        exitBt = new ExitButton(atlas);
 
         stars = new Star[STARS_COUNT];
         for (int i = 0; i < stars.length; i++) {
@@ -68,8 +71,9 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
-        exit.resize(worldBounds);
-        play.resize(worldBounds);
+        exitBt.resize(worldBounds);
+        playBt.resize(worldBounds);
+        musicBt.resize(worldBounds);
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -85,28 +89,38 @@ public class MenuScreen extends BaseScreen {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        exit.touchDown(touch,pointer,button);
-        play.touchDown(touch,pointer,button);
+        exitBt.touchDown(touch,pointer,button);
+        playBt.touchDown(touch,pointer,button);
+        musicBt.touchDown(touch,pointer,button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        exit.touchUp(touch,pointer,button);
-        play.touchUp(touch,pointer,button);
+        exitBt.touchUp(touch,pointer,button);
+        playBt.touchUp(touch,pointer,button);
+        musicBt.touchUp(touch,pointer,button);
         return false;
     }
 
     @Override
     public boolean mouseMoved(Vector2 touch) {
-        exit.mouseMoved(touch);
-        play.mouseMoved(touch);
+        exitBt.mouseMoved(touch);
+        playBt.mouseMoved(touch);
+        musicBt.mouseMoved(touch);
         return false;
     }
 
     public void update(float delta) {
         for (Star star : stars) {
             star.update(delta);
+        }
+        if (!musicBt.isPlayMusic()) {
+            music.stop();
+            playBt.setSounds(false);
+        }else{
+            music.play();
+            playBt.setSounds(true);
         }
     }
 
@@ -115,7 +129,8 @@ public class MenuScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        play.draw(batch);
-        exit.draw(batch);
+        playBt.draw(batch);
+        exitBt.draw(batch);
+        musicBt.draw(batch);
     }
 }
