@@ -1,24 +1,34 @@
 package ru.starwars.sprite;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.Sprite;
 import ru.starwars.math.Rect;
 import ru.starwars.math.TextureSpliter;
+import ru.starwars.pool.BulletPool;
 
 public class PlayerUnit extends Sprite {
 
     private final float MERGED = 0.02f;
     private final float ACCELERATION = 0.0005f;
-    private final float RESISTANCE = 0.0002f;
+    private final float RESISTANCE = 0.0001f;
+    private final float BULLET_SPEED = 1.2f;
 
     private final Vector2 v;
     private final Vector2 a;
     private final Vector2 r;
     private final Vector2 a0;
     private final Vector2 r0;
+    private BulletPool bulletPool;
+    private TextureRegion bulletRegion;
+    private Vector2 bulletPos;
+    private Vector2 bulletV;
+    private Sound soundShot;
 
     private boolean left;
     private boolean right;
@@ -28,14 +38,31 @@ public class PlayerUnit extends Sprite {
 
     private Rect worldBounds;
 
-    public PlayerUnit(TextureAtlas atlas) {
+    public PlayerUnit(TextureAtlas atlas, BulletPool bulletPool) {
         super(TextureSpliter.split(atlas.findRegion("X-Wing"), 4, 1, 4));
+        this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
+
+        soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
+        this.bulletPool = bulletPool;
 
         v = new Vector2();
         a = new Vector2();
         r = new Vector2();
+        bulletPos = new Vector2();
+        bulletV = new Vector2(0, BULLET_SPEED);
         a0 = new Vector2(ACCELERATION, 0);
         r0 = new Vector2(RESISTANCE, 0);
+    }
+
+    public void autoShooting(){
+        if (bulletPool.getActiveObjects().size() != 0) {
+            Bullet lastBullet = bulletPool.getActiveObjects().get(bulletPool.getActiveObjects().size() - 1);
+            if (lastBullet.getTop() >= 0) {
+                shot();
+            }
+        }else{
+            shot();
+        }
     }
 
     @Override
@@ -64,6 +91,16 @@ public class PlayerUnit extends Sprite {
         frame = 0;
     }
 
+    private void shot() {
+        soundShot.play();
+        Bullet bulletLeft = bulletPool.obtain();
+        Bullet bulletRight = bulletPool.obtain();
+        bulletPos.set(getLeft() + MERGED, getTop() - MERGED);
+        bulletLeft.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 3, 0.1f);
+        bulletPos.set(getRight() - MERGED, getTop() - MERGED);
+        bulletRight.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 3, 0.1f);
+    }
+
     public void keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
@@ -78,6 +115,9 @@ public class PlayerUnit extends Sprite {
                     moveRight();
                 }
                 break;
+//            case Input.Keys.SPACE:
+//                shot();
+//                break;
         }
     }
 
@@ -120,7 +160,7 @@ public class PlayerUnit extends Sprite {
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        if (pointer == leftPoint){
+        if (pointer == leftPoint) {
             left = false;
             if (right) {
                 moveRight();
@@ -129,7 +169,7 @@ public class PlayerUnit extends Sprite {
                 frame = 0;
             }
         }
-        if (pointer == rightPoint){
+        if (pointer == rightPoint) {
             right = false;
             if (left) {
                 moveLeft();
@@ -148,6 +188,7 @@ public class PlayerUnit extends Sprite {
         v.add(a).add(r);
         pos.add(v);
         checkPos();
+        autoShooting();
     }
 
     private void checkPos() {
@@ -164,7 +205,6 @@ public class PlayerUnit extends Sprite {
             if (left) {
                 moveLeft();
             }
-            ;
         }
         if (v.cpy().add(r).len() < r.len() && !right && !left) {
             stop();

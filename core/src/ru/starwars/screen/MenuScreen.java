@@ -1,6 +1,8 @@
 package ru.starwars.screen;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -25,6 +27,7 @@ public class MenuScreen extends BaseScreen {
     private ExitButton exit;
     private PlayButton play;
     private Star[] stars;
+    private Music music;
 
 
     public MenuScreen(Game game) {
@@ -45,6 +48,12 @@ public class MenuScreen extends BaseScreen {
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MenuTheme.mp3"));
+        music.setLooping(true);
+        music.setVolume(0.3f);
+        music.play();
+
     }
 
     @Override
@@ -70,6 +79,7 @@ public class MenuScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         atlas.dispose();
+        music.dispose();
         super.dispose();
     }
 
