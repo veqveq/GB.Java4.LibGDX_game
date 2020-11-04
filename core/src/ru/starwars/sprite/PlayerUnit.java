@@ -18,6 +18,7 @@ public class PlayerUnit extends Sprite {
     private final float ACCELERATION = 0.0005f;
     private final float RESISTANCE = 0.0001f;
     private final float BULLET_SPEED = 1.2f;
+    private final float RELOAD_TIME = 0.11f;
 
     private final Vector2 v;
     private final Vector2 a;
@@ -33,9 +34,12 @@ public class PlayerUnit extends Sprite {
 
     private boolean left;
     private boolean right;
+    private boolean autoShot;
 
     private int leftPoint;
     private int rightPoint;
+
+    private float reload;
 
     private Rect worldBounds;
 
@@ -46,6 +50,7 @@ public class PlayerUnit extends Sprite {
         soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
         this.bulletPool = bulletPool;
         this.sound = sound;
+        this.reload = RELOAD_TIME;
 
         v = new Vector2();
         a = new Vector2();
@@ -56,14 +61,22 @@ public class PlayerUnit extends Sprite {
         r0 = new Vector2(RESISTANCE, 0);
     }
 
-    public void autoShooting() {
-        if (bulletPool.getActiveObjects().size() != 0) {
-            Bullet lastBullet = bulletPool.getActiveObjects().get(bulletPool.getActiveObjects().size() - 1);
-            if (lastBullet.getTop() >= 0) {
-                shot();
-            }
-        } else {
+    public void autoShooting(float delta) {
+//        if (autoShot) {
+//            if (bulletPool.getActiveObjects().size() != 0) {
+//                Bullet lastBullet = bulletPool.getActiveObjects().get(bulletPool.getActiveObjects().size() - 1);
+//                if (lastBullet.getTop() >= 0) {
+//                    shot();
+//                }
+//            } else {
+//                shot();
+//            }
+//        }
+        if (reload - delta < 0 && autoShot) {
             shot();
+            reload = RELOAD_TIME;
+        }else{
+            reload -=delta;
         }
     }
 
@@ -103,6 +116,35 @@ public class PlayerUnit extends Sprite {
         bulletRight.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 3, 0.1f);
     }
 
+    @Override
+    public void update(float delta) {
+        v.add(a).add(r);
+        pos.add(v);
+        checkPos();
+        autoShooting(delta);
+    }
+
+    private void checkPos() {
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+            if (right) {
+                moveRight();
+            }
+        }
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+            if (left) {
+                moveLeft();
+            }
+        }
+        if (v.cpy().add(r).len() <= r.len() && !right && !left) {
+            stop();
+        }
+        if (v.cpy().dot(r) > 0) r.rotate(180);
+    }
+
     public void keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
@@ -117,9 +159,10 @@ public class PlayerUnit extends Sprite {
                     moveRight();
                 }
                 break;
-//            case Input.Keys.SPACE:
+            case Input.Keys.SPACE:
+                autoShot = true;
 //                shot();
-//                break;
+                break;
         }
     }
 
@@ -143,6 +186,9 @@ public class PlayerUnit extends Sprite {
                     frame = 0;
                 }
                 break;
+            case Input.Keys.SPACE:
+                autoShot = false;
+                break;
         }
     }
 
@@ -151,11 +197,16 @@ public class PlayerUnit extends Sprite {
         if (touch.x < pos.x) {
             leftPoint = pointer;
             left = true;
-            moveLeft();
-        } else {
+            if (!right) {
+                moveLeft();
+            }
+        }
+        if (touch.x >= pos.x) {
             rightPoint = pointer;
             right = true;
-            moveRight();
+            if (!left) {
+                moveRight();
+            }
         }
         return false;
     }
@@ -164,6 +215,7 @@ public class PlayerUnit extends Sprite {
     public boolean touchUp(Vector2 touch, int pointer, int button) {
         if (pointer == leftPoint) {
             left = false;
+            leftPoint = -1;
             if (right) {
                 moveRight();
             } else {
@@ -173,6 +225,7 @@ public class PlayerUnit extends Sprite {
         }
         if (pointer == rightPoint) {
             right = false;
+            rightPoint = -1;
             if (left) {
                 moveLeft();
             } else {
@@ -180,36 +233,6 @@ public class PlayerUnit extends Sprite {
                 frame = 0;
             }
         }
-        a.setZero();
-        frame = 0;
         return false;
-    }
-
-    @Override
-    public void update(float delta) {
-        v.add(a).add(r);
-        pos.add(v);
-        checkPos();
-        autoShooting();
-    }
-
-    private void checkPos() {
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
-            if (right) {
-                moveRight();
-            }
-        }
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
-            if (left) {
-                moveLeft();
-            }
-        }
-        if (v.cpy().add(r).len() < r.len() && !right && !left) {
-            stop();
-        }
     }
 }

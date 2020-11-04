@@ -1,5 +1,6 @@
 package ru.starwars.button;
 
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseButton;
@@ -10,8 +11,8 @@ public class MusicButton extends BaseButton {
 
     private boolean playMusic = true;
 
-    public MusicButton(TextureAtlas atlas) {
-        super(TextureSpliter.split(atlas.findRegion("btMusic"), 2, 1, 2));
+    public MusicButton(TextureAtlas atlas, Sound clickSound) {
+        super(TextureSpliter.split(atlas.findRegion("btMusic"), 2, 1, 2), clickSound);
     }
 
     @Override
@@ -29,6 +30,7 @@ public class MusicButton extends BaseButton {
             frame = 0;
             playMusic = true;
         }
+        doAction = false;
     }
 
     public boolean isPlayMusic() {

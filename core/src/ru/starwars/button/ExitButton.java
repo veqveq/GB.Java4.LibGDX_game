@@ -1,6 +1,7 @@
 package ru.starwars.button;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseButton;
@@ -8,8 +9,8 @@ import ru.starwars.math.Rect;
 
 public class ExitButton extends BaseButton {
 
-    public ExitButton(TextureAtlas atlas) {
-        super(atlas.findRegion("btExit"));
+    public ExitButton(TextureAtlas atlas, Sound clickSound) {
+        super(atlas.findRegion("btExit"), clickSound);
     }
 
     @Override
@@ -20,24 +21,7 @@ public class ExitButton extends BaseButton {
 
     @Override
     protected void action() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                animation();
-                Gdx.app.exit();
-            }
-        }).start();
-    }
-
-    private void animation(){
-        playAnimation = false;
-        while (scale <= 50f){
-            try {
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            scale+=0.2f;
-        }
+        scale += 2f;
+        if (scale > 50f) Gdx.app.exit();
     }
 }

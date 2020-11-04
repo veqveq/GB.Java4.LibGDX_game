@@ -3,6 +3,7 @@ package ru.starwars.screen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,6 +15,7 @@ import ru.starwars.math.Rect;
 import ru.starwars.sprite.Background;
 import ru.starwars.button.ExitButton;
 import ru.starwars.button.PlayButton;
+import ru.starwars.sprite.PlayerUnit;
 import ru.starwars.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
@@ -30,6 +32,10 @@ public class MenuScreen extends BaseScreen {
     private MusicButton musicBt;
     private Star[] stars;
     private Music music;
+    private Sound clickSound;
+    private PlayerUnit player;
+
+
 
 
     public MenuScreen(Game game) {
@@ -41,18 +47,20 @@ public class MenuScreen extends BaseScreen {
         super.show();
         atlas = new TextureAtlas("textures\\menu.pack");
         bg = new Texture("textures\\background.jpg");
+        clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds\\btClick.wav"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MenuTheme.mp3"));
 
         background = new Background(new TextureRegion(bg));
-        playBt = new PlayButton(atlas, game);
-        musicBt = new MusicButton(atlas);
-        exitBt = new ExitButton(atlas);
+        playBt = new PlayButton(atlas, clickSound, game);
+        musicBt = new MusicButton(atlas, clickSound);
+        exitBt = new ExitButton(atlas,clickSound);
+
 
         stars = new Star[STARS_COUNT];
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(atlas);
         }
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MenuTheme.mp3"));
         music.setLooping(true);
         music.setVolume(0.3f);
         music.play();
@@ -71,9 +79,10 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void resize(Rect worldBounds) {
         background.resize(worldBounds);
-        exitBt.resize(worldBounds);
         playBt.resize(worldBounds);
         musicBt.resize(worldBounds);
+        exitBt.resize(worldBounds);
+
         for (Star star : stars) {
             star.resize(worldBounds);
         }
@@ -84,6 +93,7 @@ public class MenuScreen extends BaseScreen {
         bg.dispose();
         atlas.dispose();
         music.dispose();
+        clickSound.dispose();
         super.dispose();
     }
 
@@ -112,15 +122,18 @@ public class MenuScreen extends BaseScreen {
     }
 
     public void update(float delta) {
-        for (Star star : stars) {
-            star.update(delta);
-        }
         if (!musicBt.isPlayMusic()) {
             music.stop();
             playBt.setSounds(false);
         }else{
             music.play();
             playBt.setSounds(true);
+        }
+        exitBt.update(delta);
+        musicBt.update(delta);
+        playBt.update(delta);
+        for (Star star : stars) {
+            star.update(delta);
         }
     }
 
@@ -130,7 +143,7 @@ public class MenuScreen extends BaseScreen {
             star.draw(batch);
         }
         playBt.draw(batch);
-        exitBt.draw(batch);
         musicBt.draw(batch);
+        exitBt.draw(batch);
     }
 }

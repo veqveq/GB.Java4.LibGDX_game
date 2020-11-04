@@ -6,7 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.math.Rect;
 
-public abstract class Sprite extends Rect {
+public class Sprite extends Rect {
 
     protected float angle;
     protected float scale = 1;
