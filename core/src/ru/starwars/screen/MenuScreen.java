@@ -15,7 +15,7 @@ import ru.starwars.math.Rect;
 import ru.starwars.sprite.Background;
 import ru.starwars.button.ExitButton;
 import ru.starwars.button.PlayButton;
-import ru.starwars.sprite.PlayerUnit;
+import ru.starwars.sprite.PlayerShip;
 import ru.starwars.sprite.Star;
 
 public class MenuScreen extends BaseScreen {
@@ -33,7 +33,7 @@ public class MenuScreen extends BaseScreen {
     private Star[] stars;
     private Music music;
     private Sound clickSound;
-    private PlayerUnit player;
+    private PlayerShip player;
 
 
 

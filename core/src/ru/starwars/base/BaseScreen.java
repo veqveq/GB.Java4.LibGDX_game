@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import ru.starwars.math.MatrixUtils;
 import ru.starwars.math.Rect;
 
-public class BaseScreen implements Screen, InputProcessor {
+public abstract class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
     private Rect screenBounds;

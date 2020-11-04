@@ -11,7 +11,8 @@ import ru.starwars.base.BaseScreen;
 import ru.starwars.math.Rect;
 import ru.starwars.pool.BulletPool;
 import ru.starwars.sprite.Background;
-import ru.starwars.sprite.PlayerUnit;
+import ru.starwars.sprite.EnemyShip;
+import ru.starwars.sprite.PlayerShip;
 import ru.starwars.sprite.Star;
 
 public class GameScreen extends BaseScreen {
@@ -21,10 +22,12 @@ public class GameScreen extends BaseScreen {
     private Texture bg;
 
     private Background background;
-    private PlayerUnit player;
+    private PlayerShip player;
+    private EnemyShip enemy;
     private Star[] stars;
     private TextureAtlas atlas;
-    private BulletPool bulletPool;
+    private BulletPool playerBulletPool;
+    private BulletPool enemyBulletPool;
     private Music music;
     private boolean sounds;
 
@@ -38,8 +41,10 @@ public class GameScreen extends BaseScreen {
         atlas = new TextureAtlas("textures\\game.pack");
         bg = new Texture("textures\\background.jpg");
         background = new Background(new TextureRegion(bg));
-        bulletPool = new BulletPool();
-        player = new PlayerUnit(atlas,bulletPool,sounds);
+        playerBulletPool = new BulletPool();
+        enemyBulletPool = new BulletPool();
+        player = new PlayerShip(atlas, playerBulletPool,sounds);
+        enemy = new EnemyShip(atlas, enemyBulletPool,sounds,player);
         stars = new Star[STARS_COUNT];
 
         for (int i = 0; i < stars.length; i++) {
@@ -71,6 +76,7 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
+        enemy.resize(worldBounds);
         player.resize(worldBounds);
     }
 
@@ -78,7 +84,8 @@ public class GameScreen extends BaseScreen {
     public void dispose() {
         bg.dispose();
         atlas.dispose();
-        bulletPool.dispose();
+        playerBulletPool.dispose();
+        enemyBulletPool.dispose();
         music.dispose();
         super.dispose();
     }
@@ -87,7 +94,9 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
-        bulletPool.updateActiveSprites(delta);
+        playerBulletPool.updateActiveSprites(delta);
+        enemyBulletPool.updateActiveSprites(delta);
+        enemy.update(delta);
         player.update(delta);
     }
 
@@ -96,7 +105,8 @@ public class GameScreen extends BaseScreen {
     }
 
     private void freeAllDestroyed(){
-        bulletPool.freeAllDestroyedActiveSprites();
+        playerBulletPool.freeAllDestroyedActiveSprites();
+        enemyBulletPool.freeAllDestroyedActiveSprites();
     }
 
     public void draw() {
@@ -104,7 +114,9 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        bulletPool.drawActiveSprites(batch);
+        enemyBulletPool.drawActiveSprites(batch);
+        enemy.draw(batch);
+        playerBulletPool.drawActiveSprites(batch);
         player.draw(batch);
     }
 

@@ -5,8 +5,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.math.Rect;
+import ru.starwars.math.TextureSpliter;
 
-public class Sprite extends Rect {
+public abstract class Sprite extends Rect {
 
     protected float angle;
     protected float scale = 1;
@@ -21,6 +22,10 @@ public class Sprite extends Rect {
         regions[0] = region;
     }
 
+    public Sprite(TextureRegion region, int cols, int rows, int frames) {
+        this.regions = TextureSpliter.split(region, cols, rows, frames);
+    }
+
     public Sprite(TextureRegion[] regions) {
         this.regions = regions;
     }
@@ -33,13 +38,21 @@ public class Sprite extends Rect {
 
     public void draw(SpriteBatch batch) {
         batch.draw(
-                regions[frame],
+                regions[0],
                 getLeft(), getBottom(),
                 halfWidth, halfHeight,
                 getWidth(), getHeight(),
                 scale, scale,
                 angle
         );
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public float getAngle() {
+        return angle;
     }
 
     public void update(float delta) {

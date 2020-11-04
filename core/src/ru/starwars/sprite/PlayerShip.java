@@ -2,82 +2,30 @@ package ru.starwars.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.starwars.base.Sprite;
+import ru.starwars.base.BaseShip;
 import ru.starwars.math.Rect;
 import ru.starwars.math.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
-public class PlayerUnit extends Sprite {
-
-    private final float MERGED = 0.02f;
-    private final float ACCELERATION = 0.0005f;
-    private final float RESISTANCE = 0.0001f;
-    private final float BULLET_SPEED = 1.2f;
-    private final float RELOAD_TIME = 0.11f;
-
-    private final Vector2 v;
-    private final Vector2 a;
-    private final Vector2 r;
-    private final Vector2 a0;
-    private final Vector2 r0;
-    private BulletPool bulletPool;
-    private TextureRegion bulletRegion;
-    private Vector2 bulletPos;
-    private Vector2 bulletV;
-    private Sound soundShot;
-    private boolean sound;
-
-    private boolean left;
-    private boolean right;
-    private boolean autoShot;
+public class PlayerShip extends BaseShip {
 
     private int leftPoint;
     private int rightPoint;
 
-    private float reload;
-
-    private Rect worldBounds;
-
-    public PlayerUnit(TextureAtlas atlas, BulletPool bulletPool, boolean sound) {
-        super(TextureSpliter.split(atlas.findRegion("X-Wing"), 4, 1, 4));
+    public PlayerShip(TextureAtlas atlas, BulletPool bulletPool, boolean sound) {
+        super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, sound);
         this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
-
         soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
-        this.bulletPool = bulletPool;
-        this.sound = sound;
-        this.reload = RELOAD_TIME;
-
-        v = new Vector2();
-        a = new Vector2();
-        r = new Vector2();
-        bulletPos = new Vector2();
-        bulletV = new Vector2(0, BULLET_SPEED);
-        a0 = new Vector2(ACCELERATION, 0);
-        r0 = new Vector2(RESISTANCE, 0);
     }
 
-    public void autoShooting(float delta) {
-//        if (autoShot) {
-//            if (bulletPool.getActiveObjects().size() != 0) {
-//                Bullet lastBullet = bulletPool.getActiveObjects().get(bulletPool.getActiveObjects().size() - 1);
-//                if (lastBullet.getTop() >= 0) {
-//                    shot();
-//                }
-//            } else {
-//                shot();
-//            }
-//        }
-        if (reload - delta < 0 && autoShot) {
-            shot();
-            reload = RELOAD_TIME;
-        }else{
-            reload -=delta;
-        }
+    @Override
+    protected void setConst() {
+        HORIZONTAL_ACCELERATION = 0.0005f;
+        RELOAD_TIME = 0.11f;
+        BULLET_SPEED = 1.2f;
     }
 
     @Override
@@ -87,26 +35,8 @@ public class PlayerUnit extends Sprite {
         setBottom(worldBounds.getBottom() + MERGED);
     }
 
-    private void moveLeft() {
-        a.set(a0.cpy().rotate(180));
-        r.set(r0);
-        frame = 2;
-    }
-
-    private void moveRight() {
-        a.set(a0);
-        r.set(r0.cpy().rotate(180));
-        frame = 3;
-    }
-
-    private void stop() {
-        v.setZero();
-        a.setZero();
-        r.setZero();
-        frame = 0;
-    }
-
-    private void shot() {
+    @Override
+    protected void shot() {
         if (sound) soundShot.play();
         Bullet bulletLeft = bulletPool.obtain();
         Bullet bulletRight = bulletPool.obtain();
@@ -114,35 +44,6 @@ public class PlayerUnit extends Sprite {
         bulletLeft.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 3, 0.1f);
         bulletPos.set(getRight() - MERGED, getTop() - MERGED);
         bulletRight.set(this, bulletRegion, bulletPos, bulletV, worldBounds, 3, 0.1f);
-    }
-
-    @Override
-    public void update(float delta) {
-        v.add(a).add(r);
-        pos.add(v);
-        checkPos();
-        autoShooting(delta);
-    }
-
-    private void checkPos() {
-        if (getLeft() < worldBounds.getLeft()) {
-            setLeft(worldBounds.getLeft());
-            stop();
-            if (right) {
-                moveRight();
-            }
-        }
-        if (getRight() > worldBounds.getRight()) {
-            setRight(worldBounds.getRight());
-            stop();
-            if (left) {
-                moveLeft();
-            }
-        }
-        if (v.cpy().add(r).len() <= r.len() && !right && !left) {
-            stop();
-        }
-        if (v.cpy().dot(r) > 0) r.rotate(180);
     }
 
     public void keyDown(int keycode) {
@@ -161,7 +62,6 @@ public class PlayerUnit extends Sprite {
                 break;
             case Input.Keys.SPACE:
                 autoShot = true;
-//                shot();
                 break;
         }
     }
