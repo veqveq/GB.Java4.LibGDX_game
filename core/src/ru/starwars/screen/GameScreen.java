@@ -13,7 +13,6 @@ import ru.starwars.math.Rect;
 import ru.starwars.pool.BulletPool;
 import ru.starwars.pool.EnemyShipPool;
 import ru.starwars.sprite.Background;
-import ru.starwars.sprite.EnemyShip;
 import ru.starwars.sprite.PlayerShip;
 import ru.starwars.sprite.Star;
 import ru.starwars.tools.EnemyEmitter;
@@ -26,7 +25,6 @@ public class GameScreen extends BaseScreen {
 
     private Background background;
     private PlayerShip player;
-//    private EnemyShip enemy;
     private Star[] stars;
     private TextureAtlas atlas;
     private BulletPool playerBulletPool;
@@ -51,7 +49,6 @@ public class GameScreen extends BaseScreen {
         playerBulletPool = new BulletPool();
         enemyBulletPool = new BulletPool();
         player = new PlayerShip(atlas, playerBulletPool,sounds);
-//        enemy = new EnemyShip(atlas, enemyBulletPool,sounds,player);
         enemyShipPool = new EnemyShipPool(enemyBulletPool,sounds,player,worldBounds);
         enemyEmitter = new EnemyEmitter(worldBounds,enemyShipPool,atlas,enemyBulletSound);
         stars = new Star[STARS_COUNT];
@@ -85,7 +82,6 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.resize(worldBounds);
         }
-//        enemy.resize(worldBounds);
         player.resize(worldBounds);
     }
 
@@ -107,7 +103,6 @@ public class GameScreen extends BaseScreen {
         }
         playerBulletPool.updateActiveSprites(delta);
         enemyBulletPool.updateActiveSprites(delta);
-//        enemy.update(delta);
         player.update(delta);
         enemyEmitter.generate(delta);
         enemyShipPool.updateActiveSprites(delta);
@@ -130,7 +125,6 @@ public class GameScreen extends BaseScreen {
         }
         enemyBulletPool.drawActiveSprites(batch);
         enemyShipPool.drawActiveSprites(batch);
-//        enemy.draw(batch);
         playerBulletPool.drawActiveSprites(batch);
         player.draw(batch);
     }
