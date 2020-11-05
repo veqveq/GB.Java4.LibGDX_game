@@ -9,7 +9,7 @@ import ru.starwars.tools.TextureSpliter;
 public class MediumEnemySettingsDto extends EnemySettingsDto{
 
     private final float HEIGHT = 0.4f;
-    private final float HORIZONTAL_ACCELERATION = 0.001f;
+    private final float HORIZONTAL_ACCELERATION = 0.0002f;
     private final float VERTICAL_SPEED = 0;
     private final float BULLET_HEIGHT = 0.2f;
     private final float BULLET_SPEED = -1f;
@@ -21,7 +21,7 @@ public class MediumEnemySettingsDto extends EnemySettingsDto{
     public MediumEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
         TextureRegion enemyRegion = atlas.findRegion("cruiser");
         TextureRegion bulletRegion = atlas.findRegion("fire");
-        setRegions(TextureSpliter.split(enemyRegion,1,1,1));
+        setRegions(TextureSpliter.split(enemyRegion,4,1,4));
         setBulletRegion(TextureSpliter.split(bulletRegion,2,1,2)[1]);
         setHeight(HEIGHT);
         setHorizontalAcceleration(HORIZONTAL_ACCELERATION);

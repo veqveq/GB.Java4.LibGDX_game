@@ -20,7 +20,7 @@ public class SmallEnemySettingsDto extends EnemySettingsDto{
     public SmallEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
         TextureRegion enemyRegion = atlas.findRegion("tie-striker");
         TextureRegion bulletRegion = atlas.findRegion("fire");
-        setRegions(TextureSpliter.split(enemyRegion,1,1,1));
+        setRegions(TextureSpliter.split(enemyRegion,4,1,4));
         setBulletRegion(TextureSpliter.split(bulletRegion,2,1,2)[1]);
         setHeight(HEIGHT);
         setHorizontalAcceleration(HORIZONTAL_ACCELERATION);

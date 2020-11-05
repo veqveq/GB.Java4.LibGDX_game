@@ -36,7 +36,7 @@ public class EnemyEmitter {
             generateTimer = 0;
             EnemyShip enemyShip = enemyShipPool.obtain();
             float type = (float) Math.random();
-            if (type <= 0.8f){
+            if (type <= 0.5f){
                 enemyShip.set(smallEnemySettingsDto);
             }else{
                 enemyShip.set(mediumEnemySettingsDto);

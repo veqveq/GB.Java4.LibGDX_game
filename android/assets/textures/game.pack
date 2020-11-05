@@ -13,15 +13,15 @@ X-Wing
 cruiser
   rotate: false
   xy: 5667, 1347
-  size: 512, 512
-  orig: 512, 512
+  size: 2048, 512
+  orig: 2048, 512
   offset: 0, 0
   index: -1
 tie-striker
   rotate: false
   xy: 1, 1
-  size: 256, 256
-  orig: 256, 256
+  size: 1024, 256
+  orig: 1024, 256
   offset: 0, 0
   index: -1
 fire
@@ -33,7 +33,7 @@ fire
   index: -1
 star
   rotate: false
-  xy: 6181, 1827
+  xy: 7717, 1827
   size: 32, 32
   orig: 32, 32
   offset: 0, 0

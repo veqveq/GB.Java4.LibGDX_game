@@ -38,7 +38,7 @@ public abstract class Sprite extends Rect {
 
     public void draw(SpriteBatch batch) {
         batch.draw(
-                regions[0],
+                regions[frame],
                 getLeft(), getBottom(),
                 halfWidth, halfHeight,
                 getWidth(), getHeight(),

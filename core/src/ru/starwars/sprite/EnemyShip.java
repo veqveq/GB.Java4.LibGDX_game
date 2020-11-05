@@ -67,7 +67,15 @@ public class EnemyShip extends BaseShip {
 
     @Override
     protected void checkPos() {
+        rebound();
+        turnAround();
+        startBattle();
+        super.checkPos();
         shortenDistance();
+        dodgeTheBullets();
+    }
+
+    private void rebound() {
         if (getBottom() > 0 && getBottom() < 0.1f && v.y < 0) {
             if (turn) {
                 if ((float) Math.random() < 0.1f) {
@@ -79,15 +87,11 @@ public class EnemyShip extends BaseShip {
                 v.y = VERTICAL_SPEED;
             }
         }
-        turnAround();
-        dodgeTheBullets();
-        startBattle();
-        super.checkPos();
     }
 
     private void startBattle() {
         if (getTop() > worldBounds.getTop()) {
-            v.set(0, -0.01f);
+            v.set(0, -0.001f);
         }
     }
 
