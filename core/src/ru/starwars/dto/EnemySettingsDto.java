@@ -16,6 +16,15 @@ public abstract class EnemySettingsDto {
     protected int damage;
     protected float height;
     protected int hp;
+    protected boolean turned;
+
+    public boolean isTurned() {
+        return turned;
+    }
+
+    public void setTurned(boolean turned) {
+        this.turned = turned;
+    }
 
     public TextureRegion getBulletRegion() {
         return bulletRegion;

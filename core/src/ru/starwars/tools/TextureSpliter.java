@@ -1,4 +1,4 @@
-package ru.starwars.math;
+package ru.starwars.tools;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

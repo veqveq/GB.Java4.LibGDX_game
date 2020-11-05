@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import ru.starwars.base.BaseShip;
 import ru.starwars.dto.EnemySettingsDto;
 import ru.starwars.math.Rect;
-import ru.starwars.math.TextureSpliter;
+import ru.starwars.tools.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
 public class EnemyShip extends BaseShip {
@@ -15,24 +15,15 @@ public class EnemyShip extends BaseShip {
     BulletPool playerBulletPool;
     boolean turn;
 
-    public EnemyShip(BulletPool bulletPool, boolean sound, PlayerShip playerShip){
+    public EnemyShip(BulletPool bulletPool, boolean sound, PlayerShip playerShip, Rect worldBounds) {
         super();
         this.bulletPool = bulletPool;
         this.sound = sound;
         this.playerShip = playerShip;
+        this.worldBounds = worldBounds;
     }
 
-    public EnemyShip(TextureAtlas atlas, BulletPool bulletPool, boolean sound, PlayerShip playerShip) {
-        super(atlas.findRegion("tie-striker"), 1, 1, 1, bulletPool, sound);
-        this.playerShip = playerShip;
-        this.playerBulletPool = playerShip.getBulletPool();
-        this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[1];
-        soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\TIE-fire.wav"));
-        bulletHeight = 0.07f;
-        turn = true;
-    }
-
-    public void set(EnemySettingsDto settings){
+    public void set(EnemySettingsDto settings) {
         this.regions = settings.getRegions();
         setHeightProportion(settings.getHeight());
         this.bulletRegion = settings.getBulletRegion();
@@ -44,19 +35,12 @@ public class EnemyShip extends BaseShip {
         this.RELOAD_TIME = settings.getReloadTime();
         this.hp = settings.getHp();
         this.damage = settings.getDamage();
-
-
-        v.set(0,-VERTICAL_SPEED);
+        this.turn = settings.isTurned();
+        this.playerBulletPool = playerShip.getBulletPool();
+        v.set(0, -VERTICAL_SPEED);
         a0.set(HORIZONTAL_ACCELERATION, 0);
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
-    }
-
-    @Override
-    public void resize(Rect worldBounds) {
-        this.worldBounds = worldBounds;
-        setHeightProportion(0.1f);
-        setTop(worldBounds.getTop() - MERGED);
     }
 
     @Override
@@ -64,7 +48,8 @@ public class EnemyShip extends BaseShip {
         reload -= delta;
         if ((getLeft() >= playerShip.getLeft() && getLeft() <= playerShip.getRight() ||
                 getRight() >= playerShip.getLeft() && getRight() <= playerShip.getRight()) &&
-                scale >= 0.95f) {
+                scale >= 0.95f &&
+                getTop() <= worldBounds.getTop()) {
             if (reload <= 0) {
                 shot();
                 reload = RELOAD_TIME;
@@ -81,30 +66,29 @@ public class EnemyShip extends BaseShip {
     }
 
     @Override
-    protected void setConst() {
-        HORIZONTAL_ACCELERATION = 0.0003f;
-        RELOAD_TIME = 0.25f;
-        BULLET_SPEED = -1f;
-        VERTICAL_SPEED = 0.003f;
-    }
-
-    @Override
     protected void checkPos() {
         shortenDistance();
-            if (getBottom() > 0 && getBottom() < 0.1f && v.y < 0) {
-                if (turn) {
-                    if ((float) Math.random() < 0.1f) {
-                        v.y = VERTICAL_SPEED;
-                    } else {
-                        v.y = Math.max(-VERTICAL_SPEED * 2f, v.y - 0.0006f);
-                    }
-                }else{
+        if (getBottom() > 0 && getBottom() < 0.1f && v.y < 0) {
+            if (turn) {
+                if ((float) Math.random() < 0.1f) {
                     v.y = VERTICAL_SPEED;
+                } else {
+                    v.y = Math.max(-VERTICAL_SPEED * 2f, v.y - 0.0006f);
                 }
+            } else {
+                v.y = VERTICAL_SPEED;
             }
+        }
         turnAround();
         dodgeTheBullets();
+        startBattle();
         super.checkPos();
+    }
+
+    private void startBattle() {
+        if (getTop() > worldBounds.getTop()) {
+            v.set(0, -0.01f);
+        }
     }
 
     private void shortenDistance() {

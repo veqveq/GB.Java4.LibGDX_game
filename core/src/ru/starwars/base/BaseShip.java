@@ -11,10 +11,10 @@ public abstract class BaseShip extends Sprite {
 
     private final float RESISTANCE = 0.0001f;
     protected final float MERGED = 0.02f;
-    protected float HORIZONTAL_ACCELERATION = 0;
-    protected float VERTICAL_SPEED = 0;
-    protected float RELOAD_TIME = 0;
-    protected float BULLET_SPEED = 0;
+    protected float HORIZONTAL_ACCELERATION;
+    protected float VERTICAL_SPEED;
+    protected float RELOAD_TIME;
+    protected float BULLET_SPEED;
 
     protected final Vector2 v;
     protected final Vector2 a;
@@ -52,15 +52,13 @@ public abstract class BaseShip extends Sprite {
 
     public BaseShip(TextureRegion region, int cols, int rows, int frames, BulletPool bulletPool, boolean sound) {
         super(region, cols, rows, frames);
-        setConst();
-        this.v = new Vector2(0,-VERTICAL_SPEED);
+        this.v = new Vector2();
         this.a = new Vector2();
         this.r = new Vector2();
-        a0 = new Vector2(HORIZONTAL_ACCELERATION, 0);
-        r0 = new Vector2(RESISTANCE, 0);
-        bulletV = new Vector2(0, BULLET_SPEED);
         bulletPos = new Vector2();
-        this.reload = RELOAD_TIME;
+        bulletV = new Vector2();
+        a0 = new Vector2();
+        r0 = new Vector2(RESISTANCE, 0);
         this.bulletPool = bulletPool;
         this.sound = sound;
     }
@@ -127,5 +125,4 @@ public abstract class BaseShip extends Sprite {
     }
 
     protected abstract void shot();
-    protected abstract void setConst();
 }

@@ -6,19 +6,20 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import ru.starwars.tools.TextureSpliter;
 
-public class SmallEnemySettingsDto extends EnemySettingsDto{
-    private final float HEIGHT = 0.1f;
-    private final float HORIZONTAL_ACCELERATION = 0.0003f;
-    private final float VERTICAL_SPEED = 0.003f;
-    private final float BULLET_HEIGHT = 0.1f;
-    private final float BULLET_SPEED = -1f;
-    private final float RELOAD_TIME = 0.25f;
-    private final int DAMAGE = 3;
-    private final int HP = 20;
-    private final boolean TURN_AROUND = true;
+public class MediumEnemySettingsDto extends EnemySettingsDto{
 
-    public SmallEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
-        TextureRegion enemyRegion = atlas.findRegion("tie-striker");
+    private final float HEIGHT = 0.4f;
+    private final float HORIZONTAL_ACCELERATION = 0.001f;
+    private final float VERTICAL_SPEED = 0;
+    private final float BULLET_HEIGHT = 0.2f;
+    private final float BULLET_SPEED = -1f;
+    private final float RELOAD_TIME = 0.5f;
+    private final int DAMAGE = 10;
+    private final int HP = 60;
+    private final boolean TURN_AROUND = false;
+
+    public MediumEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
+        TextureRegion enemyRegion = atlas.findRegion("cruiser");
         TextureRegion bulletRegion = atlas.findRegion("fire");
         setRegions(TextureSpliter.split(enemyRegion,1,1,1));
         setBulletRegion(TextureSpliter.split(bulletRegion,2,1,2)[1]);

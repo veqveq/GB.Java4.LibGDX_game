@@ -7,7 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseShip;
 import ru.starwars.math.Rect;
-import ru.starwars.math.TextureSpliter;
+import ru.starwars.tools.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
 public class PlayerShip extends BaseShip {
@@ -19,13 +19,12 @@ public class PlayerShip extends BaseShip {
         super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, sound);
         this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
         soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
-    }
-
-    @Override
-    protected void setConst() {
         HORIZONTAL_ACCELERATION = 0.0005f;
         RELOAD_TIME = 0.11f;
         BULLET_SPEED = 1.2f;
+        a0.set(HORIZONTAL_ACCELERATION, 0);
+        bulletV.set(0, BULLET_SPEED);
+        reload = RELOAD_TIME;
     }
 
     @Override

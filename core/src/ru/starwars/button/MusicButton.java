@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
-import ru.starwars.math.TextureSpliter;
+import ru.starwars.tools.TextureSpliter;
 
 public class MusicButton extends BaseButton {
 
