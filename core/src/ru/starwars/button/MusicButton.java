@@ -11,8 +11,8 @@ public class MusicButton extends BaseButton {
 
     private boolean playMusic = true;
 
-    public MusicButton(TextureAtlas atlas, Sound clickSound) {
-        super(TextureSpliter.split(atlas.findRegion("btMusic"), 2, 1, 2), clickSound);
+    public MusicButton(TextureAtlas atlas) {
+        super(TextureSpliter.split(atlas.findRegion("btMusic"), 2, 1, 2));
     }
 
     @Override

@@ -143,8 +143,8 @@ public abstract class BaseShip extends Sprite {
 
     @Override
     public void destroy() {
-        super.destroy();
         boom();
+        super.destroy();
     }
 
     private void boom() {

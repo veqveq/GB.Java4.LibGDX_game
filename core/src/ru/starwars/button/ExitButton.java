@@ -3,14 +3,20 @@ package ru.starwars.button;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
 
 public class ExitButton extends BaseButton {
 
-    public ExitButton(TextureAtlas atlas, Sound clickSound) {
-        super(atlas.findRegion("btExit"), clickSound);
+    public ExitButton(TextureAtlas atlas) {
+        super(atlas.findRegion("btExit"));
+    }
+
+    public ExitButton(TextureRegion texture) {
+        super(texture);
     }
 
     @Override

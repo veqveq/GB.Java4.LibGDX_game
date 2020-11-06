@@ -27,15 +27,14 @@ public class MenuScreen extends BaseScreen {
     private TextureAtlas atlas;
 
     private Background background;
+
     private ExitButton exitBt;
     private PlayButton playBt;
     private MusicButton musicBt;
+
     private Star[] stars;
+
     private Music music;
-    private Sound clickSound;
-    private PlayerShip player;
-
-
 
 
     public MenuScreen(Game game) {
@@ -47,13 +46,12 @@ public class MenuScreen extends BaseScreen {
         super.show();
         atlas = new TextureAtlas("textures\\menu.pack");
         bg = new Texture("textures\\background.jpg");
-        clickSound = Gdx.audio.newSound(Gdx.files.internal("sounds\\btClick.wav"));
         music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MenuTheme.mp3"));
 
         background = new Background(new TextureRegion(bg));
-        playBt = new PlayButton(atlas, clickSound, game);
-        musicBt = new MusicButton(atlas, clickSound);
-        exitBt = new ExitButton(atlas,clickSound);
+        playBt = new PlayButton(atlas, game);
+        musicBt = new MusicButton(atlas);
+        exitBt = new ExitButton(atlas);
 
 
         stars = new Star[STARS_COUNT];
@@ -91,25 +89,27 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void dispose() {
         bg.dispose();
+        playBt.dispose();
+        exitBt.dispose();
+        musicBt.dispose();
         atlas.dispose();
         music.dispose();
-        clickSound.dispose();
         super.dispose();
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        exitBt.touchDown(touch,pointer,button);
-        playBt.touchDown(touch,pointer,button);
-        musicBt.touchDown(touch,pointer,button);
+        exitBt.touchDown(touch, pointer, button);
+        playBt.touchDown(touch, pointer, button);
+        musicBt.touchDown(touch, pointer, button);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        exitBt.touchUp(touch,pointer,button);
-        playBt.touchUp(touch,pointer,button);
-        musicBt.touchUp(touch,pointer,button);
+        exitBt.touchUp(touch, pointer, button);
+        playBt.touchUp(touch, pointer, button);
+        musicBt.touchUp(touch, pointer, button);
         return false;
     }
 
@@ -125,7 +125,7 @@ public class MenuScreen extends BaseScreen {
         if (!musicBt.isPlayMusic()) {
             music.stop();
             playBt.setSounds(false);
-        }else{
+        } else {
             music.play();
             playBt.setSounds(true);
         }

@@ -30,7 +30,7 @@ public class PlayerShip extends BaseShip {
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
         this.damage = 1;
-        this.hp = 50;
+        this.hp = 1;
     }
 
     @Override
@@ -148,5 +148,11 @@ public class PlayerShip extends BaseShip {
                         || bullet.getBottom() > pos.y
                         || bullet.getTop() < getBottom()
         );
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        setBottom(worldBounds.getTop());
     }
 }

@@ -16,6 +16,7 @@ public class EnemyShip extends BaseShip {
     PlayerShip playerShip;
     BulletPool playerBulletPool;
     boolean turn;
+    boolean finishGame;
 
     public EnemyShip(BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sound, PlayerShip playerShip, Rect worldBounds) {
         super();
@@ -72,12 +73,18 @@ public class EnemyShip extends BaseShip {
 
     @Override
     protected void checkPos() {
-        rebound();
-        turnAround();
-        startBattle();
-        super.checkPos();
-        shortenDistance();
-        dodgeTheBullets();
+        if (!finishGame){
+            rebound();
+            turnAround();
+            startBattle();
+            super.checkPos();
+            shortenDistance();
+            dodgeTheBullets();
+        }else{
+            if (worldBounds.isOutside(this)) {
+                destroyed = true;
+            }
+        }
     }
 
     private void rebound() {
@@ -161,5 +168,15 @@ public class EnemyShip extends BaseShip {
                         || bullet.getBottom() > getTop()
                         ||bullet.getTop() < pos.y
         );
+    }
+
+    public void goAway(){
+//        stop();
+        finishGame = true;
+        r.setZero();
+//        a.setZero();
+        r0.setZero();
+//        a0.setZero();
+//        v.set(0,-3*VERTICAL_SPEED);
     }
 }

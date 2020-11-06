@@ -1,6 +1,7 @@
 package ru.starwars.button;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
@@ -13,8 +14,8 @@ public class PlayButton extends BaseButton {
     private Game game;
     private boolean sounds;
 
-    public PlayButton(TextureAtlas atlas, Sound clickSound, Game game) {
-        super(atlas.findRegion("btPlay"), clickSound);
+    public PlayButton(TextureAtlas atlas, Game game) {
+        super(atlas.findRegion("btPlay"));
         this.game = game;
         this.sounds = true;
 
@@ -32,6 +33,6 @@ public class PlayButton extends BaseButton {
 
     @Override
     protected void action() {
-        game.setScreen(new GameScreen(sounds));
+        game.setScreen(new GameScreen(sounds,game));
     }
 }

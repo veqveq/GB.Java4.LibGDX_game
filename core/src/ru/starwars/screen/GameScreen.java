@@ -1,5 +1,6 @@
 package ru.starwars.screen;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -27,6 +28,7 @@ public class GameScreen extends BaseScreen {
     private final int STARS_COUNT = 64;
 
     private Texture bg;
+    private Game game;
 
     private Background background;
     private PlayerShip player;
@@ -42,9 +44,11 @@ public class GameScreen extends BaseScreen {
     private Sound playerExplodeSound;
     private Sound enemyExplodeSound;
     private boolean sounds;
+    private boolean changeScreen;
 
-    public GameScreen(Boolean sounds) {
+    public GameScreen(Boolean sounds, Game game) {
         this.sounds = sounds;
+        this.game = game;
     }
 
     @Override
@@ -52,10 +56,10 @@ public class GameScreen extends BaseScreen {
         super.show();
         atlas = new TextureAtlas("textures\\game.pack");
         bg = new Texture("textures\\background.jpg");
+        background = new Background(new TextureRegion(bg));
         enemyBulletSound = Gdx.audio.newSound(Gdx.files.internal("sounds\\TIE-fire.wav"));
         enemyExplodeSound = Gdx.audio.newSound(Gdx.files.internal("sounds\\TIE-explode.wav"));
         playerExplodeSound = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-explode.wav"));
-        background = new Background(new TextureRegion(bg));
         playerBulletPool = new BulletPool();
         enemyBulletPool = new BulletPool();
         explodePool = new ExplodePool(atlas);
@@ -71,7 +75,7 @@ public class GameScreen extends BaseScreen {
         if (sounds) {
             music = Gdx.audio.newMusic(Gdx.files.internal("musics\\MainTheme.mp3"));
             music.setLooping(true);
-            music.setVolume(0.5f);
+            music.setVolume(0.3f);
             music.play();
         }
     }
@@ -99,15 +103,17 @@ public class GameScreen extends BaseScreen {
     @Override
     public void dispose() {
         bg.dispose();
-        atlas.dispose();
         playerBulletPool.dispose();
         enemyBulletPool.dispose();
         enemyShipPool.dispose();
-        music.dispose();
         enemyBulletSound.dispose();
         explodePool.dispose();
         enemyExplodeSound.dispose();
         playerExplodeSound.dispose();
+//        if (sounds) {
+//            music.stop();
+//            music.dispose();
+//        }
         super.dispose();
     }
 
@@ -164,11 +170,31 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        enemyBulletPool.drawActiveSprites(batch);
         enemyShipPool.drawActiveSprites(batch);
-        playerBulletPool.drawActiveSprites(batch);
-        player.draw(batch);
         explodePool.drawActiveSprites(batch);
+        enemyBulletPool.drawActiveSprites(batch);
+        playerBulletPool.drawActiveSprites(batch);
+        if (!player.isDestroyed()) {
+            player.draw(batch);
+        } else {
+            gameOver();
+        }
+    }
+
+    private void gameOver() {
+        enemyEmitter.stopGenerate();
+        List<EnemyShip> enemyShipList = enemyShipPool.getActiveObjects();
+        for (EnemyShip enemyShip : enemyShipList) {
+            if (enemyShip.isDestroyed()) {
+                continue;
+            } else {
+                enemyShip.goAway();
+            }
+        }
+        if (explodePool.getActiveObjects().size() == 0
+                && enemyShipPool.getActiveObjects().size() == 0) {
+            game.setScreen(new FinishScreen(game, stars, atlas, music));
+        }
     }
 
     @Override
