@@ -14,7 +14,7 @@ public class SmallEnemySettingsDto extends EnemySettingsDto{
     private final float BULLET_SPEED = -1f;
     private final float RELOAD_TIME = 0.25f;
     private final int DAMAGE = 3;
-    private final int HP = 20;
+    private final int HP = 30;
     private final boolean TURN_AROUND = true;
 
     public SmallEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {

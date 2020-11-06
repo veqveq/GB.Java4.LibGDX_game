@@ -1,11 +1,13 @@
 package ru.starwars.sprite;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseShip;
 import ru.starwars.dto.EnemySettingsDto;
 import ru.starwars.math.Rect;
+import ru.starwars.pool.ExplodePool;
 import ru.starwars.tools.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
@@ -15,12 +17,14 @@ public class EnemyShip extends BaseShip {
     BulletPool playerBulletPool;
     boolean turn;
 
-    public EnemyShip(BulletPool bulletPool, boolean sound, PlayerShip playerShip, Rect worldBounds) {
+    public EnemyShip(BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sound, PlayerShip playerShip, Rect worldBounds) {
         super();
         this.bulletPool = bulletPool;
+        this.explodePool = explodePool;
         this.sound = sound;
         this.playerShip = playerShip;
         this.worldBounds = worldBounds;
+        this.soundExplode = soundExplode;
     }
 
     public void set(EnemySettingsDto settings) {
@@ -41,6 +45,7 @@ public class EnemyShip extends BaseShip {
         a0.set(HORIZONTAL_ACCELERATION, 0);
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
+        this.soundExplode = settings.getSoundExplode();
     }
 
     @Override
@@ -91,7 +96,7 @@ public class EnemyShip extends BaseShip {
 
     private void startBattle() {
         if (getTop() > worldBounds.getTop()) {
-            v.set(0, -0.001f);
+            v.set(0, -VERTICAL_SPEED*2);
         }
     }
 
@@ -147,5 +152,14 @@ public class EnemyShip extends BaseShip {
             scale = 1f;
             v.y = -VERTICAL_SPEED;
         }
+    }
+
+    public boolean isBulletCollision(Rect bullet){
+        return !(
+                bullet.getRight() < getLeft()+MERGED
+                        || bullet.getLeft() > getRight()-MERGED
+                        || bullet.getBottom() > getTop()
+                        ||bullet.getTop() < pos.y
+        );
     }
 }

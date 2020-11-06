@@ -1,5 +1,6 @@
 package ru.starwars.dto;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
@@ -17,6 +18,11 @@ public abstract class EnemySettingsDto {
     protected float height;
     protected int hp;
     protected boolean turned;
+    protected Sound soundExplode = Gdx.audio.newSound(Gdx.files.internal("sounds\\TIE-explode.wav"));
+
+    public Sound getSoundExplode() {
+        return soundExplode;
+    }
 
     public boolean isTurned() {
         return turned;

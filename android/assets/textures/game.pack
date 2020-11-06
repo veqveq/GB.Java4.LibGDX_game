@@ -1,7 +1,7 @@
 
 game.png
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
 X-Wing
   rotate: false
@@ -20,8 +20,8 @@ explode
 cruiser
   rotate: false
   xy: 5667, 4040
-  size: 2048, 512
-  orig: 2048, 512
+  size: 1200, 512
+  orig: 1200, 512
   offset: 0, 0
   index: -1
 tie-striker

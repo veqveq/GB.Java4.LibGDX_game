@@ -6,9 +6,12 @@ import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.math.Rect;
 import ru.starwars.pool.BulletPool;
+import ru.starwars.pool.ExplodePool;
+import ru.starwars.sprite.Explode;
 
 public abstract class BaseShip extends Sprite {
 
+    private final float DAMAGE_ANIMATE_INTERVAL = 0.1f;
     private final float RESISTANCE = 0.0001f;
     protected final float MERGED = 0.02f;
     protected float HORIZONTAL_ACCELERATION;
@@ -24,14 +27,17 @@ public abstract class BaseShip extends Sprite {
     protected Rect worldBounds;
 
     protected BulletPool bulletPool;
+    protected ExplodePool explodePool;
     protected TextureRegion bulletRegion;
     protected Vector2 bulletV;
     protected Vector2 bulletPos;
     protected Sound soundShot;
+    protected Sound soundExplode;
     protected boolean sound;
     protected int hp;
     protected int damage;
     protected float bulletHeight;
+    private float damageAnimateTimer;
 
     protected boolean left;
     protected boolean right;
@@ -50,7 +56,7 @@ public abstract class BaseShip extends Sprite {
         bulletV = new Vector2();
     }
 
-    public BaseShip(TextureRegion region, int cols, int rows, int frames, BulletPool bulletPool, boolean sound) {
+    public BaseShip(TextureRegion region, int cols, int rows, int frames, BulletPool bulletPool, Sound soundExplode, boolean sounds) {
         super(region, cols, rows, frames);
         this.v = new Vector2();
         this.a = new Vector2();
@@ -60,26 +66,23 @@ public abstract class BaseShip extends Sprite {
         a0 = new Vector2();
         r0 = new Vector2(RESISTANCE, 0);
         this.bulletPool = bulletPool;
-        this.sound = sound;
+        this.sound = sounds;
     }
 
     protected void moveLeft() {
         a.set(a0.cpy().rotate(180));
         r.set(r0);
-        frame = 2;
     }
 
     protected void moveRight() {
         a.set(a0);
         r.set(r0.cpy().rotate(180));
-        frame = 3;
     }
 
     protected void stop() {
-        v.set(0,-VERTICAL_SPEED);
+        v.set(0, -VERTICAL_SPEED);
         a.setZero();
         r.setZero();
-        frame = 0;
     }
 
     @Override
@@ -88,6 +91,20 @@ public abstract class BaseShip extends Sprite {
         pos.add(v);
         checkPos();
         autoShooting(delta);
+        damageAnimate(delta);
+    }
+
+    private void damageAnimate(float delta) {
+        damageAnimateTimer += delta;
+        if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {
+            if (a.x < 0) {
+                frame = 2;
+            } else if (a.x > 0) {
+                frame = 3;
+            } else {
+                frame = 0;
+            }
+        }
     }
 
     protected void checkPos() {
@@ -124,5 +141,27 @@ public abstract class BaseShip extends Sprite {
         return bulletPool;
     }
 
+    @Override
+    public void destroy() {
+        super.destroy();
+        boom();
+    }
+
+    private void boom() {
+        soundExplode.play();
+        Explode explode = explodePool.obtain();
+        explode.set(getHeight(), pos);
+    }
+
     protected abstract void shot();
+
+    public void damage(int damage) {
+        frame = 1;
+        damageAnimateTimer = 0;
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            destroy();
+        }
+    }
 }

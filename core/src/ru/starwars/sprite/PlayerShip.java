@@ -2,11 +2,13 @@ package ru.starwars.sprite;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseShip;
 import ru.starwars.math.Rect;
+import ru.starwars.pool.ExplodePool;
 import ru.starwars.tools.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
@@ -15,9 +17,11 @@ public class PlayerShip extends BaseShip {
     private int leftPoint;
     private int rightPoint;
 
-    public PlayerShip(TextureAtlas atlas, BulletPool bulletPool, boolean sound) {
-        super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, sound);
+    public PlayerShip(TextureAtlas atlas, BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sounds) {
+        super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, soundExplode, sounds);
         this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
+        this.soundExplode = soundExplode;
+        this.explodePool = explodePool;
         soundShot = Gdx.audio.newSound(Gdx.files.internal("sounds\\XWing-fire.wav"));
         HORIZONTAL_ACCELERATION = 0.0005f;
         RELOAD_TIME = 0.11f;
@@ -25,6 +29,8 @@ public class PlayerShip extends BaseShip {
         a0.set(HORIZONTAL_ACCELERATION, 0);
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
+        this.damage = 1;
+        this.hp = 50;
     }
 
     @Override
@@ -133,5 +139,14 @@ public class PlayerShip extends BaseShip {
             }
         }
         return false;
+    }
+
+    public boolean isBulletCollision(Rect bullet) {
+        return !(
+                bullet.getRight() < getLeft()
+                        || bullet.getLeft() > getRight()
+                        || bullet.getBottom() > pos.y
+                        || bullet.getTop() < getBottom()
+        );
     }
 }
