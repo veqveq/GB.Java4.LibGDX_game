@@ -2,9 +2,9 @@ package ru.starwars.sprite;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ru.starwars.base.Sprite;
+import ru.starwars.base.AnimatedSprite;
 
-public class Title extends Sprite {
+public class Title extends AnimatedSprite {
 
     public Title(TextureRegion region) {
         super(region);

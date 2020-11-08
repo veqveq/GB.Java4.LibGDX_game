@@ -5,7 +5,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-public abstract class BaseButton extends Sprite {
+public abstract class BaseButton extends AnimatedSprite {
 
     protected boolean doAction;
     private boolean pressed;
@@ -20,8 +20,9 @@ public abstract class BaseButton extends Sprite {
         super(texture);
     }
 
+    @Override
     public boolean mouseMoved(Vector2 cursorPosition) {
-        if (!doAction) {
+        if (!doAction && !playingAnimation) {
             if (isMe(cursorPosition)) {
                 scale = 1.2f;
             } else {
@@ -33,11 +34,11 @@ public abstract class BaseButton extends Sprite {
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer, int button) {
-        if (!pressed && isMe(touch)) {
+        if (!pressed && isMe(touch) && !playingAnimation) {
             pressed = true;
             scale = 1f;
-            clickSound.play();
         }
+        clickSound.play();
         return false;
     }
 
@@ -48,12 +49,14 @@ public abstract class BaseButton extends Sprite {
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer, int button) {
-        if (pressed && isMe(touch)) {
-            scale = 1.2f;
-            doAction = true;
-            pressed = false;
-        }
-        scale = 1f;
+        if (!playingAnimation)
+            if (pressed && isMe(touch)) {
+                scale = 1.2f;
+                doAction = true;
+                pressed = false;
+            } else {
+                scale = 1f;
+            }
         return false;
     }
 

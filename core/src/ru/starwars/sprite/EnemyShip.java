@@ -76,10 +76,10 @@ public class EnemyShip extends BaseShip {
         if (!finishGame){
             rebound();
             turnAround();
-            startBattle();
             super.checkPos();
             shortenDistance();
             dodgeTheBullets();
+            startBattle();
         }else{
             if (worldBounds.isOutside(this)) {
                 destroyed = true;
@@ -103,7 +103,7 @@ public class EnemyShip extends BaseShip {
 
     private void startBattle() {
         if (getTop() > worldBounds.getTop()) {
-            v.set(0, -VERTICAL_SPEED*2);
+            v.set(0, Math.min(-VERTICAL_SPEED*2,-0.01f));
         }
     }
 
@@ -171,12 +171,8 @@ public class EnemyShip extends BaseShip {
     }
 
     public void goAway(){
-//        stop();
         finishGame = true;
         r.setZero();
-//        a.setZero();
         r0.setZero();
-//        a0.setZero();
-//        v.set(0,-3*VERTICAL_SPEED);
     }
 }

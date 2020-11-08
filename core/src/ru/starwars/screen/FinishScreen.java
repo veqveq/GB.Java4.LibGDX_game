@@ -28,6 +28,8 @@ public class FinishScreen extends BaseScreen {
     private ExitButton exitButton;
     private Title gameOver;
 
+    private final int ANIMATION_SPEED = 5;
+
 
     public FinishScreen(Game game, Star[] stars, TextureAtlas atlas, Music music) {
         this.game = game;
@@ -70,9 +72,11 @@ public class FinishScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-        newGameButton.draw(batch);
-        exitButton.draw(batch);
-        gameOver.draw(batch);
+        gameOver.zoomAnimation(0, 1, batch, ANIMATION_SPEED);
+        gameOver.movedAnimation(batch,new Vector2(0,0),new Vector2(0.01f,0.1f),ANIMATION_SPEED);
+        newGameButton.zoomAnimation(0, 1, batch, ANIMATION_SPEED);
+        exitButton.zoomAnimation(0, 1, batch, ANIMATION_SPEED);
+        exitButton.movedAnimation(batch,new Vector2(0,0),new Vector2(0,-0.1f),ANIMATION_SPEED);
     }
 
     @Override

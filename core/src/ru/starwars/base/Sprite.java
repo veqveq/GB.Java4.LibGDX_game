@@ -71,6 +71,10 @@ public abstract class Sprite extends Rect {
         return false;
     }
 
+    public boolean mouseMoved(Vector2 cursorPosition) {
+        return false;
+    }
+
     public void setAngle(float angle) {
         this.angle = angle;
     }

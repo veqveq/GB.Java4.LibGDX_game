@@ -44,7 +44,6 @@ public class GameScreen extends BaseScreen {
     private Sound playerExplodeSound;
     private Sound enemyExplodeSound;
     private boolean sounds;
-    private boolean changeScreen;
 
     public GameScreen(Boolean sounds, Game game) {
         this.sounds = sounds;
@@ -110,10 +109,6 @@ public class GameScreen extends BaseScreen {
         explodePool.dispose();
         enemyExplodeSound.dispose();
         playerExplodeSound.dispose();
-//        if (sounds) {
-//            music.stop();
-//            music.dispose();
-//        }
         super.dispose();
     }
 
