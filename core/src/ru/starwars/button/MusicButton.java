@@ -1,11 +1,10 @@
 package ru.starwars.button;
 
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
-import ru.starwars.tools.TextureSpliter;
+import ru.starwars.utils.TextureSpliter;
 
 public class MusicButton extends BaseButton {
 

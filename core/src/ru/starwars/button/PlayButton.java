@@ -33,6 +33,6 @@ public class PlayButton extends BaseButton {
 
     @Override
     protected void action() {
-        game.setScreen(new GameScreen(sounds,game));
+        game.setScreen(new GameScreen(sounds));
     }
 }

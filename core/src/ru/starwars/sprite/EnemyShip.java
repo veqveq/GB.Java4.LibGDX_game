@@ -1,22 +1,21 @@
 package ru.starwars.sprite;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseShip;
 import ru.starwars.dto.EnemySettingsDto;
 import ru.starwars.math.Rect;
 import ru.starwars.pool.ExplodePool;
-import ru.starwars.tools.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
 public class EnemyShip extends BaseShip {
 
-    PlayerShip playerShip;
-    BulletPool playerBulletPool;
-    boolean turn;
-    boolean finishGame;
+    private PlayerShip playerShip;
+    private BulletPool playerBulletPool;
+    private boolean turn;
+    private boolean finishGame;
+    private int score;
+
 
     public EnemyShip(BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sound, PlayerShip playerShip, Rect worldBounds) {
         super();
@@ -42,11 +41,13 @@ public class EnemyShip extends BaseShip {
         this.damage = settings.getDamage();
         this.turn = settings.isTurned();
         this.playerBulletPool = playerShip.getBulletPool();
+        this.score = settings.getScore();
         v.set(0, -VERTICAL_SPEED);
         a0.set(HORIZONTAL_ACCELERATION, 0);
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
         this.soundExplode = settings.getSoundExplode();
+
     }
 
     @Override
@@ -174,5 +175,9 @@ public class EnemyShip extends BaseShip {
         finishGame = true;
         r.setZero();
         r0.setZero();
+    }
+
+    public int getScore() {
+        return score;
     }
 }

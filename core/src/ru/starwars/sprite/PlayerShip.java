@@ -9,13 +9,14 @@ import com.badlogic.gdx.math.Vector2;
 import ru.starwars.base.BaseShip;
 import ru.starwars.math.Rect;
 import ru.starwars.pool.ExplodePool;
-import ru.starwars.tools.TextureSpliter;
+import ru.starwars.utils.TextureSpliter;
 import ru.starwars.pool.BulletPool;
 
 public class PlayerShip extends BaseShip {
 
     private int leftPoint;
     private int rightPoint;
+    private final int HP = 1;
 
     public PlayerShip(TextureAtlas atlas, BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sounds) {
         super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, soundExplode, sounds);
@@ -30,7 +31,21 @@ public class PlayerShip extends BaseShip {
         bulletV.set(0, BULLET_SPEED);
         reload = RELOAD_TIME;
         this.damage = 1;
-        this.hp = 1;
+        this.hp = HP;
+    }
+
+    public void restartGame(Rect worldBounds) {
+        leftPoint = 0;
+        rightPoint = 0;
+        stop();
+        pos.x = 0;
+        this.hp = HP;
+        frame = 0;
+        left = false;
+        right = false;
+        autoShot = false;
+        setBottom(worldBounds.getBottom() + MERGED);
+        flushDestroy();
     }
 
     @Override
@@ -154,5 +169,6 @@ public class PlayerShip extends BaseShip {
     public void destroy() {
         super.destroy();
         setBottom(worldBounds.getTop());
+        v.setZero();
     }
 }

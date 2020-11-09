@@ -1,10 +1,8 @@
 package ru.starwars.button;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
@@ -28,6 +26,9 @@ public class ExitButton extends BaseButton {
     @Override
     protected void action() {
         scale += 2f;
-        if (scale > 50f) Gdx.app.exit();
+        doAction = true;
+        if (scale > 50f) {
+            Gdx.app.exit();
+        }
     }
 }

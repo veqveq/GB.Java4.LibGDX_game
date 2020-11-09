@@ -17,8 +17,17 @@ public abstract class EnemySettingsDto {
     protected int damage;
     protected float height;
     protected int hp;
+    protected int score;
     protected boolean turned;
     protected Sound soundExplode = Gdx.audio.newSound(Gdx.files.internal("sounds\\TIE-explode.wav"));
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
 
     public Sound getSoundExplode() {
         return soundExplode;

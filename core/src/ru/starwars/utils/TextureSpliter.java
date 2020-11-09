@@ -1,4 +1,4 @@
-package ru.starwars.tools;
+package ru.starwars.utils;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 

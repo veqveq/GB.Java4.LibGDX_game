@@ -3,11 +3,11 @@ package ru.starwars.sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
-import ru.starwars.base.Sprite;
+import ru.starwars.base.AnimatedSprite;
 
-public class Explode extends Sprite {
+public class Explode extends AnimatedSprite {
 
-    private float ANIMATE_INTERVAL = 0.04f;
+    public final static float ANIMATE_INTERVAL = 0.04f;
 
     private float animateTimer;
 
@@ -18,6 +18,7 @@ public class Explode extends Sprite {
     public void set(float height, Vector2 pos){
         setHeightProportion(height*2);
         this.pos.set(pos);
+
     }
 
     @Override

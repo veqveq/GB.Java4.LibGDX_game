@@ -94,6 +94,14 @@ public abstract class BaseShip extends Sprite {
         damageAnimate(delta);
     }
 
+    public Vector2 getV() {
+        return v;
+    }
+
+    public int getHp() {
+        return hp;
+    }
+
     private void damageAnimate(float delta) {
         damageAnimateTimer += delta;
         if (damageAnimateTimer >= DAMAGE_ANIMATE_INTERVAL) {

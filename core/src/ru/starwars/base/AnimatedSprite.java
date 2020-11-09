@@ -10,9 +10,13 @@ public abstract class AnimatedSprite extends Sprite {
     private boolean startMoving = true;
     protected boolean playingAnimation = false;
 
-    private float alfa = 0;
+    private float alfaFromEmergence = 0;
+    private float alfaFromFanding = 1;
     private Vector2 v = new Vector2();
 
+    public AnimatedSprite(TextureRegion region, int cols, int rows, int frames) {
+        super(region, cols, rows, frames);
+    }
 
     public AnimatedSprite(TextureRegion[] regions) {
         super(regions);
@@ -42,10 +46,24 @@ public abstract class AnimatedSprite extends Sprite {
     }
 
     public boolean emergenceAnimation(SpriteBatch batch, float speed) {
-        if (alfa < 1) {
+        if (alfaFromEmergence < 1) {
             playingAnimation = true;
-            alfa += 1 / speed / 60;
-            batch.setColor(255, 255, 255, alfa);
+            alfaFromEmergence += 1 / speed / 60;
+            batch.setColor(255, 255, 255, alfaFromEmergence);
+            draw(batch);
+            batch.setColor(255, 255, 255, 1);
+            return false;
+        }
+        draw(batch);
+        playingAnimation = false;
+        return true;
+    }
+
+    public boolean fadingAnimation(SpriteBatch batch, float speed) {
+        if (alfaFromFanding > 0) {
+            playingAnimation = true;
+            alfaFromFanding -= 1 / speed / 60;
+            batch.setColor(255, 255, 255, alfaFromFanding);
             draw(batch);
             batch.setColor(255, 255, 255, 1);
             return false;
@@ -74,7 +92,20 @@ public abstract class AnimatedSprite extends Sprite {
         } finally {
             draw(batch);
         }
+    }
 
+    public void resetAnimation(){
+        startZooming = true;
+        startMoving = true;
+        playingAnimation = false;
+        alfaFromEmergence = 0;
+        alfaFromFanding = 1;
+        v.setZero();
+    }
 
+    @Override
+    public void destroy() {
+        resetAnimation();
+        super.destroy();
     }
 }

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import ru.starwars.math.Rect;
-import ru.starwars.tools.TextureSpliter;
+import ru.starwars.utils.TextureSpliter;
 
 public abstract class Sprite extends Rect {
 

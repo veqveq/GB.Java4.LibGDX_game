@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ru.starwars.tools.TextureSpliter;
+import ru.starwars.utils.TextureSpliter;
 
 public class SmallEnemySettingsDto extends EnemySettingsDto{
     private final float HEIGHT = 0.1f;
@@ -15,6 +15,7 @@ public class SmallEnemySettingsDto extends EnemySettingsDto{
     private final float RELOAD_TIME = 0.25f;
     private final int DAMAGE = 3;
     private final int HP = 30;
+    private final int SCORE = 5;
     private final boolean TURN_AROUND = true;
 
     public SmallEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
@@ -32,5 +33,6 @@ public class SmallEnemySettingsDto extends EnemySettingsDto{
         setDamage(DAMAGE);
         setHp(HP);
         setTurned(TURN_AROUND);
+        setScore(SCORE);
     }
 }

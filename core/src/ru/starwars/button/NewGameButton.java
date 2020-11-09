@@ -1,19 +1,18 @@
 package ru.starwars.button;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 import ru.starwars.base.BaseButton;
 import ru.starwars.math.Rect;
-import ru.starwars.screen.MenuScreen;
+import ru.starwars.screen.GameScreen;
 
 public class NewGameButton extends BaseButton {
 
-    private Game game;
+    private GameScreen screen;
 
-    public NewGameButton(TextureAtlas atlas, Game game) {
+    public NewGameButton(TextureAtlas atlas, GameScreen screen) {
         super(atlas.findRegion("newgame"));
-        this.game = game;
+        this.screen = screen;
     }
 
     @Override
@@ -24,6 +23,6 @@ public class NewGameButton extends BaseButton {
 
     @Override
     protected void action() {
-        game.setScreen(new MenuScreen(game));
+        screen.restartGame();
     }
 }

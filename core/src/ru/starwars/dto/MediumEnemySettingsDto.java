@@ -4,7 +4,7 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
-import ru.starwars.tools.TextureSpliter;
+import ru.starwars.utils.TextureSpliter;
 
 public class MediumEnemySettingsDto extends EnemySettingsDto{
 
@@ -14,9 +14,11 @@ public class MediumEnemySettingsDto extends EnemySettingsDto{
     private final float BULLET_HEIGHT = 0.2f;
     private final float BULLET_SPEED = -1f;
     private final float RELOAD_TIME = 0.5f;
+    private final int SCORE = 20;
     private final int DAMAGE = 10;
     private final int HP = 500;
     private final boolean TURN_AROUND = false;
+
 
     public MediumEnemySettingsDto(TextureAtlas atlas, Sound bulletSound) {
         TextureRegion enemyRegion = atlas.findRegion("cruiser");
@@ -33,5 +35,6 @@ public class MediumEnemySettingsDto extends EnemySettingsDto{
         setDamage(DAMAGE);
         setHp(HP);
         setTurned(TURN_AROUND);
+        setScore(SCORE);
     }
 }

@@ -62,7 +62,10 @@ public abstract class BaseButton extends AnimatedSprite {
 
     @Override
     public void update(float delta) {
-        if (doAction) action();
+        if (doAction) {
+            doAction = false;
+            action();
+        }
     }
 
     public void dispose(){

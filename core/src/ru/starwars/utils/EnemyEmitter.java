@@ -1,4 +1,4 @@
-package ru.starwars.tools;
+package ru.starwars.utils;
 
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -9,7 +9,6 @@ import ru.starwars.math.Rect;
 import ru.starwars.math.Rnd;
 import ru.starwars.pool.EnemyShipPool;
 import ru.starwars.sprite.EnemyShip;
-import ru.starwars.sprite.PlayerShip;
 
 public class EnemyEmitter {
 
@@ -46,9 +45,5 @@ public class EnemyEmitter {
             enemyShip.pos.x = Rnd.nextFloat(worldBounds.getLeft()+enemyShip.getHalfWidth(),worldBounds.getRight()-enemyShip.getHalfWidth());
             enemyShip.setBottom(worldBounds.getTop());
         }
-    }
-
-    public void stopGenerate() {
-        this.stopGenerate = true;
     }
 }
