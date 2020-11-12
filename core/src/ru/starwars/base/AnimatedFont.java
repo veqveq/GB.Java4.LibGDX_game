@@ -1,7 +1,9 @@
-package ru.starwars.utils;
+package ru.starwars.base;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+
+import ru.starwars.utils.Font;
 
 public class AnimatedFont extends Font {
 
@@ -25,7 +27,7 @@ public class AnimatedFont extends Font {
         }
         if (getCapHeight() < finishScale) {
             System.out.println(getCapHeight());
-            setSize((getCapHeight() + ((finishScale - startScale) / speed / 60))* getScaleY());
+            setSize((getCapHeight() + ((finishScale - startScale) / speed / 60)) * getScaleY());
             System.out.println(getCapHeight());
             return false;
         }
@@ -43,7 +45,7 @@ public class AnimatedFont extends Font {
     }
 
     public boolean fadingAnimation(float speed) {
-        if (getColor().a > 0) {
+        if (getColor().a > 0.01) {
             getColor().a -= 1 / speed / 60;
             return false;
         } else {
