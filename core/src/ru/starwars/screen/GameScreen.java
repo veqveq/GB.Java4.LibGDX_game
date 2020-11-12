@@ -15,18 +15,22 @@ import java.util.List;
 import ru.starwars.base.BaseScreen;
 import ru.starwars.button.ExitButton;
 import ru.starwars.button.NewGameButton;
+import ru.starwars.dto.RandEventsDto;
 import ru.starwars.math.Rect;
 import ru.starwars.pool.BulletPool;
 import ru.starwars.pool.EnemyShipPool;
+import ru.starwars.pool.EventsPool;
 import ru.starwars.pool.ExplodePool;
 import ru.starwars.sprite.Background;
 import ru.starwars.sprite.Bullet;
 import ru.starwars.sprite.EnemyShip;
 import ru.starwars.sprite.PlayerShip;
+import ru.starwars.sprite.RandomEvent;
 import ru.starwars.sprite.Star;
 import ru.starwars.sprite.Title;
 import ru.starwars.utils.AnimatedFont;
 import ru.starwars.utils.EnemyEmitter;
+import ru.starwars.utils.EventEmitter;
 
 public class GameScreen extends BaseScreen {
 
@@ -59,7 +63,9 @@ public class GameScreen extends BaseScreen {
     private BulletPool enemyBulletPool;
     private EnemyShipPool enemyShipPool;
     private ExplodePool explodePool;
+    private EventsPool eventsPool;
     private EnemyEmitter enemyEmitter;
+    private EventEmitter eventEmitter;
     private Music music;
     private Sound enemyBulletSound;
     private Sound playerExplodeSound;
@@ -85,8 +91,6 @@ public class GameScreen extends BaseScreen {
         fontHp = new AnimatedFont("font\\starwars.fnt", "font\\starwars.png");
         fontScore.setSize(0.03f);
         fontHp.setSize(0.03f);
-        fontScore.setColor(Color.YELLOW);
-        fontHp.setColor(Color.YELLOW);
 
         playerBulletPool = new BulletPool();
         enemyBulletPool = new BulletPool();
@@ -98,6 +102,9 @@ public class GameScreen extends BaseScreen {
 
         enemyShipPool = new EnemyShipPool(enemyBulletPool, explodePool, enemyExplodeSound, sounds, player, worldBounds);
         enemyEmitter = new EnemyEmitter(worldBounds, enemyShipPool, atlas, enemyBulletSound);
+
+        eventsPool = new EventsPool(explodePool,playerExplodeSound);
+        eventEmitter = new EventEmitter(worldBounds,eventsPool,atlas);
 
         newGameButton = new NewGameButton(atlas, this);
         exitButton = new ExitButton(atlas.findRegion("exit"));
@@ -122,13 +129,14 @@ public class GameScreen extends BaseScreen {
 
         explodePool.freeAllActiveObjects();
         playerBulletPool.freeAllActiveObjects();
+        eventsPool.freeAllActiveObjects();
 
         exitButton.resetAnimation();
         gameOver.resetAnimation();
         newGameButton.resetAnimation();
 
         fontScore.resetAnimation();
-        fontScore.setSize(0.03f*fontScore.getScaleY());
+        fontScore.setSize(0.03f * fontScore.getScaleY());
         fontHp.resetAnimation();
         scoreCounter = 0;
     }
@@ -141,7 +149,6 @@ public class GameScreen extends BaseScreen {
         checkCollision();
         freeAllDestroyed();
         draw();
-        drawInterface();
         batch.end();
     }
 
@@ -165,6 +172,7 @@ public class GameScreen extends BaseScreen {
         enemyShipPool.dispose();
         enemyBulletSound.dispose();
         explodePool.dispose();
+        eventsPool.dispose();
         enemyExplodeSound.dispose();
         playerExplodeSound.dispose();
         if (sounds) music.dispose();
@@ -178,11 +186,13 @@ public class GameScreen extends BaseScreen {
         }
         explodePool.updateActiveSprites(delta);
         enemyShipPool.updateActiveSprites(delta);
+        eventsPool.updateActiveSprites(delta);
         if (state == State.PLAYING) {
             playerBulletPool.updateActiveSprites(delta);
             enemyBulletPool.updateActiveSprites(delta);
             player.update(delta);
             enemyEmitter.generate(delta);
+            eventEmitter.generate(delta);
         } else {
             newGameButton.update(delta);
             exitButton.update(delta);
@@ -194,17 +204,29 @@ public class GameScreen extends BaseScreen {
         List<EnemyShip> enemyShipList = enemyShipPool.getActiveObjects();
         List<Bullet> playerBulletList = playerBulletPool.getActiveObjects();
         List<Bullet> enemyBulletList = enemyBulletPool.getActiveObjects();
+        List<RandomEvent> eventsList = eventsPool.getActiveObjects();
         for (Bullet bullet : playerBulletList) {
             if (bullet.isDestroyed()) {
                 continue;
             }
+            for (RandomEvent event : eventsList){
+                if (event.isDestroyed()){
+                    continue;
+                }
+                if (event.isBulletCollision(bullet)){
+                    event.damage(bullet.getDamage());
+                    bullet.destroy();
+                }
+            }
             for (EnemyShip enemyShip : enemyShipList) {
                 if (enemyShip.isDestroyed()) {
-                    scoreCounter += enemyShip.getScore();
                     continue;
                 }
                 if (enemyShip.isBulletCollision(bullet) && enemyShip.getScale() == 1) {
                     enemyShip.damage(bullet.getDamage());
+                    if (enemyShip.isDestroyed()) {
+                        scoreCounter += enemyShip.getScore();
+                    }
                     bullet.destroy();
                 }
             }
@@ -216,6 +238,23 @@ public class GameScreen extends BaseScreen {
             if (player.isBulletCollision(bullet)) {
                 player.damage(bullet.getDamage());
                 bullet.destroy();
+            }
+        }
+        for (RandomEvent event : eventsList){
+            if (event.isDestroyed()){
+                continue;
+            }
+            if (player.isBulletCollision(event)){
+                if (event.getDamage() > 0){
+                    player.damage(event.getDamage());
+                    event.destroy();
+                }else{
+                    player.resumeHp();
+                    event.delete();
+                }
+            }
+            if (event.getTop() <= worldBounds.getBottom()){
+                event.delete();
             }
         }
     }
@@ -234,6 +273,7 @@ public class GameScreen extends BaseScreen {
         }
         explodePool.drawActiveSprites(batch);
         enemyShipPool.drawActiveSprites(batch);
+        eventsPool.drawActiveSprites(batch);
         if (state == State.PLAYING) {
             enemyBulletPool.drawActiveSprites(batch);
             playerBulletPool.drawActiveSprites(batch);
@@ -244,6 +284,7 @@ public class GameScreen extends BaseScreen {
             gameOver();
             state = State.GAME_OVER;
         }
+        drawInterface();
         if (state == State.GAME_OVER) {
             gameOver.zoomAnimation(0, 1, batch, ANIMATION_SPEED);
             gameOver.movedAnimation(batch, new Vector2(0, 0), new Vector2(0.01f, 0.1f), ANIMATION_SPEED);
@@ -272,20 +313,20 @@ public class GameScreen extends BaseScreen {
     private void drawInterface() {
         if (state == State.PLAYING) {
             scorePrinter.setLength(0);
-            fontScore.draw(batch, scorePrinter.append(SCORE).append(scoreCounter), worldBounds.getLeft() + 0.02f, worldBounds.getBottom() + MERGED + fontScore.getCapHeight(), Align.left);
+            fontScore.draw(batch, scorePrinter.append(SCORE).append(scoreCounter), worldBounds.getLeft() + MERGED, worldBounds.getBottom() + MERGED + fontScore.getCapHeight(), Align.left);
             hpPrinter.setLength(0);
-            fontHp.draw(batch, hpPrinter.append(HP).append(player.getHp()), worldBounds.getRight() - 0.02f, worldBounds.getBottom() + MERGED + fontHp.getCapHeight(), Align.right);
+            fontHp.draw(batch, hpPrinter.append(HP).append(player.getHp()), worldBounds.getRight() - MERGED, worldBounds.getBottom() + MERGED + fontHp.getCapHeight(), Align.right);
         } else {
             scorePrinter.setLength(0);
-            fontScore.zoomAnimation(0.03f, 0.07f, ANIMATION_SPEED);
+            fontScore.zoomAnimation(0.03f, 0.05f, ANIMATION_SPEED);
             fontScore.movedAnimation(
                     batch,
                     new Vector2(worldBounds.getLeft() + 0.02f, worldBounds.getBottom() + MERGED + fontScore.getCapHeight()),
                     new Vector2(-0.25f, 0.25f),
-                    ANIMATION_SPEED+2f, scorePrinter.append(SCORE).append(scoreCounter),
+                    ANIMATION_SPEED + 2f, scorePrinter.append(SCORE).append(scoreCounter),
                     Align.left);
             hpPrinter.setLength(0);
-            fontHp.fadingAnimation(ANIMATION_SPEED*0.5f);
+            fontHp.fadingAnimation(ANIMATION_SPEED * 0.5f);
             fontHp.draw(batch, hpPrinter.append(HP).append(player.getHp()), worldBounds.getRight() - 0.02f, worldBounds.getBottom() + MERGED + fontHp.getCapHeight(), Align.right);
         }
     }

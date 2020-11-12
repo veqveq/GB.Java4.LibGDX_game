@@ -2,6 +2,7 @@ package ru.starwars.base;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
@@ -14,10 +15,14 @@ public abstract class BaseButton extends AnimatedSprite {
 
     public BaseButton(TextureRegion texture) {
         super(texture);
+        texture.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
     public BaseButton(TextureRegion[] texture) {
         super(texture);
+        for (TextureRegion region: texture){
+            region.getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        }
     }
 
     @Override

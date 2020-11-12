@@ -16,10 +16,10 @@ public class PlayerShip extends BaseShip {
 
     private int leftPoint;
     private int rightPoint;
-    private final int HP = 1;
+    private final int HP = 100;
 
     public PlayerShip(TextureAtlas atlas, BulletPool bulletPool, ExplodePool explodePool, Sound soundExplode, boolean sounds) {
-        super(atlas.findRegion("X-Wing"), 4, 1, 4, bulletPool, soundExplode, sounds);
+        super(atlas.findRegion("X-Wing"),4,1,4,bulletPool,sounds);
         this.bulletRegion = TextureSpliter.split(atlas.findRegion("fire"), 2, 1, 2)[0];
         this.soundExplode = soundExplode;
         this.explodePool = explodePool;
@@ -34,12 +34,16 @@ public class PlayerShip extends BaseShip {
         this.hp = HP;
     }
 
+    public void resumeHp(){
+        this.hp = HP;
+    }
+
     public void restartGame(Rect worldBounds) {
         leftPoint = 0;
         rightPoint = 0;
         stop();
+        resumeHp();
         pos.x = 0;
-        this.hp = HP;
         frame = 0;
         left = false;
         right = false;
@@ -171,4 +175,6 @@ public class PlayerShip extends BaseShip {
         setBottom(worldBounds.getTop());
         v.setZero();
     }
+
+
 }

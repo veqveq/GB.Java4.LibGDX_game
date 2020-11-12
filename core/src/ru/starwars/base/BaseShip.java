@@ -56,7 +56,7 @@ public abstract class BaseShip extends Sprite {
         bulletV = new Vector2();
     }
 
-    public BaseShip(TextureRegion region, int cols, int rows, int frames, BulletPool bulletPool, Sound soundExplode, boolean sounds) {
+    public BaseShip(TextureRegion region, int cols, int rows, int frames, BulletPool bulletPool, boolean sounds) {
         super(region, cols, rows, frames);
         this.v = new Vector2();
         this.a = new Vector2();

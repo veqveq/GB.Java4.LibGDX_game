@@ -13,6 +13,7 @@ public abstract class SpritesPool <T extends Sprite>{
     protected abstract T newObject();
 
     public T obtain(){
+        System.out.println(activeObjects.size() +" / " + freeObjects.size());
         T object;
         if (freeObjects.isEmpty()){
            object = newObject();

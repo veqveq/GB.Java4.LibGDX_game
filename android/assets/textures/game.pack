@@ -1,67 +1,81 @@
 
 game.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 X-Wing
   rotate: false
-  xy: 1, 3018
+  xy: 1, 3274
   size: 5664, 1600
   orig: 5664, 1600
   offset: 0, 0
   index: -1
 explode
   rotate: false
-  xy: 1, 325
+  xy: 1, 581
   size: 2826, 2691
   orig: 2826, 2691
   offset: 0, 0
   index: -1
+bolid
+  rotate: false
+  xy: 5667, 3874
+  size: 1250, 1000
+  orig: 1250, 1000
+  offset: 0, 0
+  index: -1
 cruiser
   rotate: false
-  xy: 5667, 4106
+  xy: 1, 67
   size: 1200, 512
   orig: 1200, 512
   offset: 0, 0
   index: -1
 tie-striker
   rotate: false
-  xy: 1, 67
+  xy: 2829, 3016
   size: 1024, 256
   orig: 1024, 256
   offset: 0, 0
   index: -1
+hiler
+  rotate: false
+  xy: 5667, 3332
+  size: 360, 540
+  orig: 360, 540
+  offset: 0, 0
+  index: -1
 gameover
   rotate: false
-  xy: 2829, 2952
+  xy: 6919, 4810
   size: 512, 64
   orig: 512, 64
   offset: 0, 0
   index: -1
 newgame
   rotate: false
-  xy: 5667, 4040
+  xy: 1, 1
   size: 384, 64
   orig: 384, 64
   offset: 0, 0
   index: -1
 fire
   rotate: false
-  xy: 6869, 4490
+  xy: 1203, 451
   size: 256, 128
   orig: 256, 128
   offset: 0, 0
   index: -1
 exit
   rotate: false
-  xy: 1, 1
+  xy: 2829, 2950
   size: 169, 64
   orig: 169, 64
   offset: 0, 0
   index: -1
 star
   rotate: false
-  xy: 1027, 291
+  xy: 3855, 3240
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
